@@ -1,0 +1,105 @@
+version: "3.9"
+name: infrastructure-template
+volumes:
+  cosmos-db-volume:
+  azurite-volume:
+  solr-data:
+  rabbitmq-conf-volume:
+  rabbitmq-data-volume:
+  rabbitmq-logs-volume:
+
+networks:
+  customnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.55.0/24
+          gateway: 192.168.55.1
+
+services:
+  cosmosdb:
+    container_name: cosmosdb
+    image: "mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator"
+    restart: unless-stopped
+    mem_limit: 3G
+    cpu_count: 2
+    environment:
+      - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=10
+      - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
+      - AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE=127.0.1.1
+    ports:
+       - "8081:8081"
+       - "8900:8900"
+       - "8901:8901"
+       - "8979:8979"
+       - "10250-10256:10250-10256"
+       - "10350:10350"
+    networks:
+      customnet:
+        ipv4_address: 192.168.55.20
+    volumes:
+       - cosmos-db-volume:/tmp/cosmos/appdata
+
+  azurite:
+    container_name: azurite
+    image: "mcr.microsoft.com/azure-storage/azurite"
+    restart: unless-stopped
+    ports:
+       - "10000-10002:10000-10002"
+    networks:
+      customnet:
+        ipv4_address: 192.168.55.30
+    volumes:
+      - azurite-volume:/data
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: "masstransit/rabbitmq"
+    restart: unless-stopped
+    ports:
+      - "5672:5672"     #amqp
+      - "15672:15672"   #http
+    networks:
+      customnet:
+        ipv4_address: 192.168.55.40
+    volumes:
+      - rabbitmq-conf-volume:/etc/rabbitmq/
+      - rabbitmq-data-volume:/var/lib/rabbitmq/
+      - rabbitmq-logs-volume:/var/log/rabbitmq/
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 5s
+      timeout: 20s
+      retries: 5
+
+  # azure-search:
+  #   container_name: azure-search
+  #   image: tomee/azure-search-emulator
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8000:443"
+  #   networks:
+  #     customnet:
+  #       ipv4_address: 192.168.55.50
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=https://+:443
+  #     - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+  #     - ASPNETCORE_Kestrel__Certificates__Default__Path=/srv/cert/testcert.pfx
+  #   volumes:
+  #     - ./.indexes/:/srv/data
+  #   depends_on:
+  #     - solr
+  #
+  # solr:
+  #   image: solr:7
+  #   container_name: SolrService
+  #   ports:
+  #     - "8983:8983"
+  #   volumes:
+  #     - solr-data:/var/solr
+  #   entrypoint:
+  #     - bash
+  #     - "-c"
+  #     - "precreate-core catalog-internal-index; precreate-core invoicingindex; exec solr -f"
