@@ -1,0 +1,12 @@
+﻿{
+  "profiles": {
+    "Worker.Host": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Local",
+        "ASPNETCORE_ENVIRONMENT": "Local"
+      }
+    }
+  }
+}

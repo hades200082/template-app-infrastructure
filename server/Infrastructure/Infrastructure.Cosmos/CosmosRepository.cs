@@ -325,7 +325,7 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         Guard.Against.NullOrWhiteSpace(id);
         Guard.Against.NullOrWhiteSpace(partitionKeyValue);
 
-        var container = await _cosmosProvider.GetContainerAsync(cancellationToken);
+        var container = await _cosmosProvider.GetContainerAsync(cancellationToken).ConfigureAwait(false);
 
         try
         {

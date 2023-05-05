@@ -11,6 +11,7 @@ internal sealed class CosmosProvider : ICosmosProvider
     private readonly CosmosOptions _options;
     private readonly CosmosClient _client;
     private static Container? _container;
+    private static Container? _leaseContainer;
 
     public CosmosProvider(
         IOptions<CosmosOptions> options,
@@ -45,5 +46,16 @@ internal sealed class CosmosProvider : ICosmosProvider
         }
 
         return _container;
+    }
+
+    public async Task<Container> GetLeaseContainerAsync(CancellationToken cancellationToken)
+    {
+        if (_leaseContainer is null)
+        {
+            var db = (await _client.CreateDatabaseIfNotExistsAsync(_options.DatabaseId, cancellationToken: cancellationToken).ConfigureAwait(false)).Database;
+            _leaseContainer = (await db.CreateContainerIfNotExistsAsync("leases", "/PartitionId", cancellationToken: cancellationToken).ConfigureAwait(false)).Container;
+        }
+
+        return _leaseContainer;
     }
 }

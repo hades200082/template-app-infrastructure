@@ -53,6 +53,7 @@ public static class ServiceCollectionExtensions
             });
 
         services.AddSingleton<ICosmosProvider, CosmosProvider>();
+        services.AddSingleton<IChangeFeedProvider, ChangeFeedProvider>();
 
         services.AddSingleton(typeof(IRepository<>), typeof(CosmosRepository<>));
 

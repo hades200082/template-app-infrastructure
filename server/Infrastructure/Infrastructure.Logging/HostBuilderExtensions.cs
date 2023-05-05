@@ -21,8 +21,10 @@ public static class HostBuilderExtensions
 
             if (environment.IsLocal())
             {
+#pragma warning disable CA1305
                 cfg.WriteTo.Console();
                 cfg.WriteTo.Debug();
+#pragma warning restore CA1305
             }
 
             if (!string.IsNullOrWhiteSpace(sentryDsn))

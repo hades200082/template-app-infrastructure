@@ -12,4 +12,14 @@ public static class LoggerMessageDefinitions
     {
         s_logMethodCallDefinition(logger, method, methodArguments, null);
     }
+
+
+    private static readonly Action<ILogger, string, Exception?> s_logSimpleTrace =
+        LoggerMessage.Define<string>(LogLevel.Trace, 0,
+            "{Message}");
+
+    public static void LogSimpleTrace(this ILogger logger, string message)
+    {
+        s_logSimpleTrace(logger, message, null);
+    }
 }

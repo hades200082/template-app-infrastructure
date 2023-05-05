@@ -1,6 +1,6 @@
 namespace Infrastructure.Cosmos;
 
-internal sealed class CosmosOptions
+public sealed class CosmosOptions
 {
     public string? AccountEndpoint { get; set; }
     public string? AccountKey { get; set; }
