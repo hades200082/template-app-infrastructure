@@ -4,6 +4,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Shared.Core;
 
+#pragma warning disable CA1812
+// warning disabled since CosmosProvider is injected, not direclty instantiated
+
 namespace Infrastructure.Cosmos;
 
 internal sealed class CosmosProvider : ICosmosProvider

@@ -10,15 +10,12 @@ namespace Worker.Host;
 internal sealed class ChangeFeedHandler : IChangeFeedHandler
 {
     private readonly IPublishEndpoint _publishEndpoint;
-    private readonly ISendEndpointProvider _sendEndpointProvider;
 
     public ChangeFeedHandler(
-        IPublishEndpoint publishEndpoint,
-        ISendEndpointProvider sendEndpointProvider
+        IPublishEndpoint publishEndpoint
     )
     {
         _publishEndpoint = publishEndpoint;
-        _sendEndpointProvider = sendEndpointProvider;
     }
 
     public async Task HandleChangeFeedAsync(ChangeFeedProcessorContext context, IReadOnlyCollection<Entity> changes, CancellationToken cancellationToken)

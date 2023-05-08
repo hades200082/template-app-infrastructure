@@ -9,5 +9,10 @@ public sealed class ExampleEntity : Entity
         Name = string.Empty;
     }
 
+    public ExampleEntity(string name)
+    {
+        Name = name;
+    }
+
     public string Name { get; set; }
 }

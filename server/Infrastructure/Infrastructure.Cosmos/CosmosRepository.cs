@@ -331,15 +331,13 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         {
             var result = await container.PatchItemAsync<TEntity>(id, new PartitionKey(partitionKeyValue),
                 patch.ToCosmosPatchOperations(), cancellationToken: cancellationToken).ConfigureAwait(false);
+            _logger.LogCosmosDiagnosticsTrace("Patch", result.RequestCharge, result.Diagnostics);
 
             return result.Resource;
         }
         catch (CosmosException cex)
         {
-            _logger.LogError(cex,
-                "Cosmos DB call failed in method '{Method}' with {StatusCode}, {SubStatusCode}, Diagnostics: {Diagnostics}",
-                nameof(PatchAsync), cex.StatusCode, cex.SubStatusCode,
-                cex.Diagnostics);
+            _logger.LogCosmosException(new {patch, id, partitionKeyValue}, cex);
             throw;
         }
     }

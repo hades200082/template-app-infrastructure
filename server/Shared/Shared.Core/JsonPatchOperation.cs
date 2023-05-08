@@ -1,34 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace Shared.Core;
 
-namespace Shared.Core;
-
-public class JsonPatchOperation
+public sealed class JsonPatchOperation
 {
-    [Required]
-    public string Op { get; set; }
+    public JsonPatchOperation(string op, string path, object? value)
+    {
+        Op = op;
+        Path = path;
+        Value = value;
+    }
 
-    [Required]
-    public string Path { get; set; }
+    public string Op { get; }
 
-    public object? Value { get; set; }
+    public string Path { get; }
 
-    // public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    // {
-    //     if (string.IsNullOrWhiteSpace(Op))
-    //         yield return new ValidationResult($"Operation is required.");
-    //
-    //     var validOps = new[] { "add", "remove", "replace", "set" };
-    //     if (string.IsNullOrWhiteSpace(Op))
-    //         yield return new ValidationResult("Operation is required");
-    //
-    //     if (!validOps.Contains(Op, StringComparer.OrdinalIgnoreCase))
-    //         yield return new ValidationResult("Invalid operation");
-    //
-    //     if (!Path.StartsWith("/", StringComparison.Ordinal))
-    //         yield return new ValidationResult("Path must start with a forward slash");
-    //
-    //     if(!Op.Equals("remove", StringComparison.OrdinalIgnoreCase) && Value is null)
-    //         yield return new ValidationResult("A value must be provided for add or replace operations");
-    //
-    // }
+    public object? Value { get; }
 }

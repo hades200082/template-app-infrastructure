@@ -49,7 +49,6 @@ public interface IRepository<TEntity>
     Task<TEntity?> UpdateAsync(TEntity entity,CancellationToken cancellationToken = default);
 
     // Patch
-    // TODO : Add JsonPatch capability
     Task<TEntity?> PatchAsync(JsonPatch patch, string id, string partitionKeyValue, CancellationToken cancellationToken = default);
 
     // Delete
