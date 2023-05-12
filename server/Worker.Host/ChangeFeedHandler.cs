@@ -9,13 +9,13 @@ namespace Worker.Host;
 
 internal sealed class ChangeFeedHandler : IChangeFeedHandler
 {
-    private readonly IPublishEndpoint _publishEndpoint;
+    private readonly IBus _bus;
 
     public ChangeFeedHandler(
-        IPublishEndpoint publishEndpoint
+        IBus bus
     )
     {
-        _publishEndpoint = publishEndpoint;
+        _bus = bus;
     }
 
     public async Task HandleChangeFeedAsync(ChangeFeedProcessorContext context, IReadOnlyCollection<Entity> changes, CancellationToken cancellationToken)
@@ -40,6 +40,6 @@ internal sealed class ChangeFeedHandler : IChangeFeedHandler
     private async Task HandleMyEntityAsync(ExampleEntity ent, CancellationToken cancellationToken = default)
     {
         var mapper = new ExampleEntityMapper();
-        await _publishEndpoint.Publish(mapper.EntityToMessage(ent), cancellationToken);
+        await _bus.Publish(mapper.EntityToMessage(ent), cancellationToken);
     }
 }
