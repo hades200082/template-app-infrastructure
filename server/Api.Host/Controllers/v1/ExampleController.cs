@@ -32,6 +32,32 @@ public class ExampleController : ControllerBase
     }
 
     /// <summary>
+    /// Get by ID
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <response code="200">Found</response>
+    /// <response code="400">Validation failed</response>
+    /// <response code="404">Object not found</response>
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(ExampleEntityResponseModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetAsync([Required]string id, CancellationToken cancellationToken)
+    {
+        _logger.LogMethodCall(new { id });
+        if (!ModelState.IsValid)
+            return ValidationProblem(ModelState);
+
+        var queryResult = await _mediator.Send(new GetExampleEntityQuery(id), cancellationToken).ConfigureAwait(false);
+
+        return queryResult.Match<IActionResult>(
+            x => Ok(new ExampleEntityDtoMapper().ToResponse(x)),
+            _ => NotFound()
+        );
+    }
+
+    /// <summary>
     /// Create
     /// </summary>
     /// <param name="request"></param>
@@ -60,32 +86,6 @@ public class ExampleController : ControllerBase
         return createResult.Match<IActionResult>(
             x => CreatedAtRoute( "Get", new { x.Id }, new ExampleEntityDtoMapper().ToResponse(x)),
             error => Problem(error.Value, statusCode: StatusCodes.Status500InternalServerError)
-        );
-    }
-
-    /// <summary>
-    /// Get by ID
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="cancellationToken"></param>
-    /// <response code="200">Found</response>
-    /// <response code="400">Validation failed</response>
-    /// <response code="404">Object not found</response>
-    [HttpGet("{id}")]
-    [ProducesResponseType(typeof(ExampleEntityResponseModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAsync([Required]string id, CancellationToken cancellationToken)
-    {
-        _logger.LogMethodCall(new { id });
-        if (!ModelState.IsValid)
-            return ValidationProblem(ModelState);
-
-        var queryResult = await _mediator.Send(new GetExampleEntityQuery(id), cancellationToken).ConfigureAwait(false);
-
-        return queryResult.Match<IActionResult>(
-            x => Ok(new ExampleEntityDtoMapper().ToResponse(x)),
-            _ => NotFound()
         );
     }
 }

@@ -13,21 +13,21 @@ public interface IRepository<TEntity>
     // Get (cross partition)
     Task<IPagedData<TEntity>> QueryAsync(CancellationToken cancellationToken = default); // Effectively "Get Everything" from the container
     Task<IPagedData<TEntity>> QueryAsync(int maxItems, CancellationToken cancellationToken = default);
-    Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? expression, CancellationToken cancellationToken = default);
-    Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? expression, int maxItems, CancellationToken cancellationToken = default);
+    Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? whereExpression, CancellationToken cancellationToken = default);
+    Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? whereExpression, int maxItems, CancellationToken cancellationToken = default);
     Task<IPagedData<TEntity>> QueryAsync(string partitionKeyValue, CancellationToken cancellationToken = default);
     Task<IPagedData<TEntity>> QueryAsync(string partitionKeyValue, int maxItems, CancellationToken cancellationToken = default);
-    Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? expression, string partitionKeyValue, CancellationToken cancellationToken = default);
-    Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? expression, string partitionKeyValue, int maxItems, CancellationToken cancellationToken = default);
+    Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? whereExpression, string partitionKeyValue, CancellationToken cancellationToken = default);
+    Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? whereExpression, string partitionKeyValue, int maxItems, CancellationToken cancellationToken = default);
 
     Task<IPagedData<TEntity>> ContinueQueryAsync(string continuationToken, CancellationToken cancellationToken = default);
     Task<IPagedData<TEntity>> ContinueQueryAsync(int maxItems, string continuationToken, CancellationToken cancellationToken = default);
-    Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? expression, string continuationToken, CancellationToken cancellationToken = default);
-    Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? expression, int maxItems, string continuationToken, CancellationToken cancellationToken = default);
+    Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? whereExpression, string continuationToken, CancellationToken cancellationToken = default);
+    Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? whereExpression, int maxItems, string continuationToken, CancellationToken cancellationToken = default);
     Task<IPagedData<TEntity>> ContinueQueryAsync(string partitionKeyValue, string continuationToken, CancellationToken cancellationToken = default);
     Task<IPagedData<TEntity>> ContinueQueryAsync(string partitionKeyValue, int maxItems, string continuationToken, CancellationToken cancellationToken = default);
-    Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? expression, string partitionKeyValue, string continuationToken, CancellationToken cancellationToken = default);
-    Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? expression, string partitionKeyValue, int maxItems, string continuationToken, CancellationToken cancellationToken = default);
+    Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? whereExpression, string partitionKeyValue, string continuationToken, CancellationToken cancellationToken = default);
+    Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? whereExpression, string partitionKeyValue, int maxItems, string continuationToken, CancellationToken cancellationToken = default);
 
 
     // Count

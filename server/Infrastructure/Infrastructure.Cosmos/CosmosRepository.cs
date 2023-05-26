@@ -22,9 +22,10 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         _logger = logger;
     }
 
-    public async Task<TEntity?> FindAsync(string id, string partitionKeyValue, CancellationToken cancellationToken = default)
+    public async Task<TEntity?> FindAsync(string id, string partitionKeyValue,
+        CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {id, partitionKeyValue});
+        _logger.LogMethodCall(new { id, partitionKeyValue });
 
         var container = await _cosmosProvider.GetContainerAsync(cancellationToken).ConfigureAwait(false);
         ItemResponse<TEntity>? result;
@@ -37,7 +38,7 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         }
         catch (CosmosException cex)
         {
-            _logger.LogCosmosException(new {id, partitionKeyValue}, cex);
+            _logger.LogCosmosException(new { id, partitionKeyValue }, cex);
             return null;
         }
 
@@ -47,86 +48,174 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
     public Task<IPagedData<TEntity>> QueryAsync(CancellationToken cancellationToken = default)
     {
         _logger.LogMethodCall(null);
-        return QueryInternalAsync(null, null, null, 0, cancellationToken);
+        return QueryInternalAsync(null, null, null, 0, cancellationToken: cancellationToken);
     }
+
+    public Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, dynamic>> orderBySelector,
+        string orderByDirection = "ASC", CancellationToken cancellationToken = default)
+    {
+        _logger.LogMethodCall(new { orderBySelector, orderByDirection });
+        return QueryInternalAsync(null, null, null, 0, orderBySelector, orderByDirection,
+            cancellationToken: cancellationToken);
+    }
+
     public Task<IPagedData<TEntity>> QueryAsync(int maxItems, CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {maxItems});
-        return QueryInternalAsync(null, null, null, maxItems, cancellationToken);
+        _logger.LogMethodCall(new { maxItems });
+        return QueryInternalAsync(null, null, null, maxItems, cancellationToken: cancellationToken);
     }
-    public Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? expression, CancellationToken cancellationToken = default)
+
+    public Task<IPagedData<TEntity>> QueryAsync(int maxItems, Expression<Func<TEntity, dynamic>> orderBySelector,
+        string orderByDirection = "ASC", CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {expression});
-        return QueryInternalAsync(expression, null, null, 0, cancellationToken);
+        _logger.LogMethodCall(new { maxItems, orderBySelector, orderByDirection });
+        return QueryInternalAsync(null, null, null, maxItems, orderBySelector, orderByDirection,
+            cancellationToken: cancellationToken);
     }
-    public Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? expression, int maxItems, CancellationToken cancellationToken = default)
+
+    public Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? whereExpression,
+        CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {expression, maxItems});
-        return QueryInternalAsync(expression, null, null, maxItems, cancellationToken);
+        _logger.LogMethodCall(new { whereExpression });
+        return QueryInternalAsync(whereExpression, null, null, 0, cancellationToken: cancellationToken);
     }
+
+    public Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? whereExpression,
+        Expression<Func<TEntity, dynamic>> orderBySelector,
+        string orderByDirection = "ASC", CancellationToken cancellationToken = default)
+    {
+        _logger.LogMethodCall(new { whereExpression, orderBySelector, orderByDirection });
+        return QueryInternalAsync(whereExpression, null, null, 0, orderBySelector, orderByDirection, cancellationToken: cancellationToken);
+    }
+
+    public Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? whereExpression, int maxItems,
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogMethodCall(new { whereExpression, maxItems });
+        return QueryInternalAsync(whereExpression, null, null, maxItems, cancellationToken: cancellationToken);
+    }
+
+    public Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? whereExpression, int maxItems,
+        Expression<Func<TEntity, dynamic>> orderBySelector,
+        string orderByDirection = "ASC", CancellationToken cancellationToken = default)
+    {
+        _logger.LogMethodCall(new { whereExpression, maxItems, orderBySelector, orderByDirection });
+        return QueryInternalAsync(whereExpression, null, null, maxItems, orderBySelector, orderByDirection, cancellationToken: cancellationToken);
+    }
+
     public Task<IPagedData<TEntity>> QueryAsync(string partitionKeyValue, CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {partitionKeyValue});
-        return QueryInternalAsync(null, partitionKeyValue, null, 0, cancellationToken);
+        _logger.LogMethodCall(new { partitionKeyValue });
+        return QueryInternalAsync(null, partitionKeyValue, null, 0, cancellationToken: cancellationToken);
     }
-    public Task<IPagedData<TEntity>> QueryAsync(string partitionKeyValue, int maxItems, CancellationToken cancellationToken = default)
+
+    public Task<IPagedData<TEntity>> QueryAsync(string partitionKeyValue, Expression<Func<TEntity, dynamic>> orderBySelector,
+        string orderByDirection = "ASC", CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {partitionKeyValue, maxItems});
-        return QueryInternalAsync(null, partitionKeyValue, null, maxItems, cancellationToken);
+        _logger.LogMethodCall(new { partitionKeyValue, orderBySelector, orderByDirection });
+        return QueryInternalAsync(null, partitionKeyValue, null, 0, orderBySelector, orderByDirection, cancellationToken: cancellationToken);
     }
-    public Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? expression, string partitionKeyValue, CancellationToken cancellationToken = default)
+
+    public Task<IPagedData<TEntity>> QueryAsync(string partitionKeyValue, int maxItems,
+        CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {expression, partitionKeyValue});
-        return QueryInternalAsync(expression, partitionKeyValue, null, 0, cancellationToken);
+        _logger.LogMethodCall(new { partitionKeyValue, maxItems });
+        return QueryInternalAsync(null, partitionKeyValue, null, maxItems, cancellationToken: cancellationToken);
     }
-    public Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? expression, string partitionKeyValue, int maxItems, CancellationToken cancellationToken = default)
+
+    public Task<IPagedData<TEntity>> QueryAsync(string partitionKeyValue, int maxItems,
+        Expression<Func<TEntity, dynamic>> orderBySelector,
+        string orderByDirection = "ASC", CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {expression, partitionKeyValue, maxItems});
-        return QueryInternalAsync(expression, partitionKeyValue, null, maxItems, cancellationToken);
+        _logger.LogMethodCall(new { partitionKeyValue, maxItems, orderBySelector, orderByDirection });
+        return QueryInternalAsync(null, partitionKeyValue, null, maxItems, orderBySelector, orderByDirection, cancellationToken: cancellationToken);
     }
-    public Task<IPagedData<TEntity>> ContinueQueryAsync(string partitionKeyValue, string continuationToken, CancellationToken cancellationToken = default)
+
+    public Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? whereExpression,
+        string partitionKeyValue, CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {partitionKeyValue, continuationToken});
-        return QueryInternalAsync(null, partitionKeyValue, continuationToken, 0, cancellationToken);
+        _logger.LogMethodCall(new { whereExpression, partitionKeyValue });
+        return QueryInternalAsync(whereExpression, partitionKeyValue, null, 0, cancellationToken: cancellationToken);
     }
-    public Task<IPagedData<TEntity>> ContinueQueryAsync(string partitionKeyValue, int maxItems, string continuationToken, CancellationToken cancellationToken = default)
+
+    public Task<IPagedData<TEntity>> QueryAsync(Expression<Func<TEntity, bool>>? whereExpression,
+        string partitionKeyValue, int maxItems, CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {partitionKeyValue, maxItems, continuationToken});
-        return QueryInternalAsync(null, partitionKeyValue, continuationToken, maxItems, cancellationToken);
+        _logger.LogMethodCall(new { whereExpression, partitionKeyValue, maxItems });
+        return QueryInternalAsync(whereExpression, partitionKeyValue, null, maxItems,
+            cancellationToken: cancellationToken);
     }
-    public Task<IPagedData<TEntity>> ContinueQueryAsync(int maxItems, string continuationToken, CancellationToken cancellationToken = default)
+
+    public Task<IPagedData<TEntity>> ContinueQueryAsync(string partitionKeyValue, string continuationToken,
+        CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {maxItems, continuationToken});
-        return QueryInternalAsync(null, null, continuationToken, maxItems, cancellationToken);
+        _logger.LogMethodCall(new { partitionKeyValue, continuationToken });
+        return QueryInternalAsync(null, partitionKeyValue, continuationToken, 0, cancellationToken: cancellationToken);
     }
-    public Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? expression, int maxItems, string continuationToken, CancellationToken cancellationToken = default)
+
+    public Task<IPagedData<TEntity>> ContinueQueryAsync(string partitionKeyValue, int maxItems,
+        string continuationToken, CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {expression, maxItems, continuationToken});
-        return QueryInternalAsync(expression, null, continuationToken, maxItems, cancellationToken);
+        _logger.LogMethodCall(new { partitionKeyValue, maxItems, continuationToken });
+        return QueryInternalAsync(null, partitionKeyValue, continuationToken, maxItems,
+            cancellationToken: cancellationToken);
     }
-    public Task<IPagedData<TEntity>> ContinueQueryAsync(string continuationToken, CancellationToken cancellationToken = default)
+
+    public Task<IPagedData<TEntity>> ContinueQueryAsync(int maxItems, string continuationToken,
+        CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {continuationToken});
-        return QueryInternalAsync(null, null, continuationToken, 0, cancellationToken);
+        _logger.LogMethodCall(new { maxItems, continuationToken });
+        return QueryInternalAsync(null, null, continuationToken, maxItems, cancellationToken: cancellationToken);
     }
-    public Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? expression, string continuationToken, CancellationToken cancellationToken = default)
+
+    public Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? whereExpression, int maxItems,
+        string continuationToken, CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {expression, continuationToken});
-        return QueryInternalAsync(expression, null, continuationToken, 0, cancellationToken);
+        _logger.LogMethodCall(new { whereExpression, maxItems, continuationToken });
+        return QueryInternalAsync(whereExpression, null, continuationToken, maxItems,
+            cancellationToken: cancellationToken);
     }
-    public Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? expression, string partitionKeyValue, int maxItems, string continuationToken, CancellationToken cancellationToken = default)
+
+    public Task<IPagedData<TEntity>> ContinueQueryAsync(string continuationToken,
+        CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {expression, partitionKeyValue, maxItems, continuationToken});
-        return QueryInternalAsync(expression, partitionKeyValue, continuationToken, maxItems, cancellationToken);
+        _logger.LogMethodCall(new { continuationToken });
+        return QueryInternalAsync(null, null, continuationToken, 0, cancellationToken: cancellationToken);
     }
-    public Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? expression, string partitionKeyValue, string continuationToken, CancellationToken cancellationToken = default)
+
+    public Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? whereExpression,
+        string continuationToken, CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {expression, partitionKeyValue, continuationToken});
-        return QueryInternalAsync(expression, partitionKeyValue, continuationToken, 0, cancellationToken);
+        _logger.LogMethodCall(new { whereExpression, continuationToken });
+        return QueryInternalAsync(whereExpression, null, continuationToken, 0, cancellationToken: cancellationToken);
     }
-    private async Task<IPagedData<TEntity>> QueryInternalAsync(Expression<Func<TEntity, bool>>? expression, string? partitionKeyValue, string? continuationToken, int maxItems, CancellationToken cancellationToken = default)
+
+    public Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? whereExpression,
+        string partitionKeyValue, int maxItems, string continuationToken, CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {expression, partitionKeyValue, continuationToken, maxItems});
+        _logger.LogMethodCall(new { whereExpression, partitionKeyValue, maxItems, continuationToken });
+        return QueryInternalAsync(whereExpression, partitionKeyValue, continuationToken, maxItems,
+            cancellationToken: cancellationToken);
+    }
+
+    public Task<IPagedData<TEntity>> ContinueQueryAsync(Expression<Func<TEntity, bool>>? whereExpression,
+        string partitionKeyValue, string continuationToken, CancellationToken cancellationToken = default)
+    {
+        _logger.LogMethodCall(new { whereExpression, partitionKeyValue, continuationToken });
+        return QueryInternalAsync(whereExpression, partitionKeyValue, continuationToken, 0,
+            cancellationToken: cancellationToken);
+    }
+
+    private async Task<IPagedData<TEntity>> QueryInternalAsync(
+        Expression<Func<TEntity, bool>>? whereExpression,
+        string? partitionKeyValue,
+        string? continuationToken,
+        int maxItems,
+        Expression<Func<TEntity, dynamic>>? orderBySelector = null,
+        string orderByDirection = "ASC",
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogMethodCall(new { whereExpression, partitionKeyValue, continuationToken, maxItems });
         var container = await _cosmosProvider.GetContainerAsync(cancellationToken).ConfigureAwait(false);
 
         var options = new QueryRequestOptions();
@@ -142,8 +231,16 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
             var query = container.GetItemLinqQueryable<TEntity>(false, continuationToken, options)
                 .Where(x => x.Type == typeof(TEntity).Name);
 
-            if (expression is not null)
-                query = query.Where(expression);
+            if (whereExpression is not null)
+                query = query.Where(whereExpression);
+
+            if (orderBySelector is not null && !string.IsNullOrWhiteSpace(orderByDirection))
+                query = orderByDirection.ToUpperInvariant() switch
+                {
+                    "ASC" => query.OrderBy(orderBySelector),
+                    "DESC" => query.OrderByDescending(orderBySelector),
+                    _ => throw new ArgumentOutOfRangeException(nameof(orderByDirection))
+                };
 
             var total = await query.CountAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             _logger.LogCosmosDiagnosticsTrace("Total count", total.RequestCharge, total.Diagnostics);
@@ -158,47 +255,50 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         }
         catch (CosmosException cex)
         {
-            _logger.LogCosmosException(new {expression, partitionKeyValue, continuationToken, maxItems}, cex);
+            _logger.LogCosmosException(new { whereExpression, partitionKeyValue, continuationToken, maxItems }, cex);
             throw new CosmosFriendlyException("Query failed. See inner exception for details.", cex);
         }
     }
 
-    public Task<int> CountAsync(Expression<Func<TEntity, bool>>? expression, CancellationToken cancellationToken = default)
+    public Task<int> CountAsync(Expression<Func<TEntity, bool>>? whereExpression,
+        CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {expression});
-        return CountInternalAsync(expression, null, cancellationToken);
+        _logger.LogMethodCall(new { whereExpression });
+        return CountInternalAsync(whereExpression, null, cancellationToken);
     }
+
     public Task<int> CountAsync(string partitionKeyValue, CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {partitionKeyValue});
+        _logger.LogMethodCall(new { partitionKeyValue });
         return CountInternalAsync(null, partitionKeyValue, cancellationToken);
     }
-    public Task<int> CountAsync(Expression<Func<TEntity, bool>>? expression, string partitionKeyValue, CancellationToken cancellationToken = default)
+
+    public Task<int> CountAsync(Expression<Func<TEntity, bool>>? whereExpression, string partitionKeyValue,
+        CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {expression, partitionKeyValue});
-        return CountInternalAsync(expression, partitionKeyValue, cancellationToken);
+        _logger.LogMethodCall(new { whereExpression, partitionKeyValue });
+        return CountInternalAsync(whereExpression, partitionKeyValue, cancellationToken);
     }
-    private async Task<int> CountInternalAsync(Expression<Func<TEntity, bool>>? expression, string? partitionKeyValue, CancellationToken cancellationToken = default)
+
+    private async Task<int> CountInternalAsync(Expression<Func<TEntity, bool>>? whereExpression,
+        string? partitionKeyValue, CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {expression, partitionKeyValue});
+        _logger.LogMethodCall(new { whereExpression, partitionKeyValue });
         var container = await _cosmosProvider.GetContainerAsync(cancellationToken).ConfigureAwait(false);
 
         QueryRequestOptions? options = null;
 
-        if(!string.IsNullOrWhiteSpace(partitionKeyValue))
-            options = new QueryRequestOptions
-            {
-                PartitionKey = new PartitionKey(partitionKeyValue),
-            };
+        if (!string.IsNullOrWhiteSpace(partitionKeyValue))
+            options = new QueryRequestOptions { PartitionKey = new PartitionKey(partitionKeyValue), };
 
         try
         {
             Response<int> result;
             var query = container.GetItemLinqQueryable<TEntity>(requestOptions: options);
-            if (expression is null)
+            if (whereExpression is null)
                 result = await query.CountAsync(cancellationToken).ConfigureAwait(false);
             else
-                result = await query.Where(expression).CountAsync(cancellationToken).ConfigureAwait(false);
+                result = await query.Where(whereExpression).CountAsync(cancellationToken).ConfigureAwait(false);
 
             _logger.LogCosmosDiagnosticsTrace("Count", result.RequestCharge, result.Diagnostics);
 
@@ -206,39 +306,49 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         }
         catch (CosmosException cex)
         {
-            _logger.LogCosmosException(new {expression, partitionKeyValue}, cex);
-            throw new CosmosFriendlyException("An error occurred while attempting to process a 'count' query in Cosmos. See the inner exception for more details.", cex);
+            _logger.LogCosmosException(new { whereExpression, partitionKeyValue }, cex);
+            throw new CosmosFriendlyException(
+                "An error occurred while attempting to process a 'count' query in Cosmos. See the inner exception for more details.",
+                cex);
         }
     }
 
-    public async Task<bool> ExistsAsync(string id, string partitionKeyValue, CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsAsync(string id, string partitionKeyValue,
+        CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {id, partitionKeyValue});
+        _logger.LogMethodCall(new { id, partitionKeyValue });
         Guard.Against.NullOrWhiteSpace(id);
         Guard.Against.NullOrWhiteSpace(partitionKeyValue);
-        return await CountInternalAsync(x => x.Id == id, partitionKeyValue, cancellationToken).ConfigureAwait(false) > 0;
+        return await CountInternalAsync(x => x.Id == id, partitionKeyValue, cancellationToken).ConfigureAwait(false) >
+               0;
     }
+
     public async Task<bool> ExistsAsync(string id, CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {id});
+        _logger.LogMethodCall(new { id });
         Guard.Against.NullOrWhiteSpace(id);
         return await CountInternalAsync(x => x.Id == id, null, cancellationToken).ConfigureAwait(false) > 0;
     }
-    public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>>? expression, string partitionKeyValue, CancellationToken cancellationToken = default)
+
+    public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>>? whereExpression, string partitionKeyValue,
+        CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {expression, partitionKeyValue});
+        _logger.LogMethodCall(new { whereExpression, partitionKeyValue });
         Guard.Against.NullOrWhiteSpace(partitionKeyValue);
-        return await CountInternalAsync(expression, partitionKeyValue, cancellationToken).ConfigureAwait(false) > 0;
+        return await CountInternalAsync(whereExpression, partitionKeyValue, cancellationToken).ConfigureAwait(false) >
+               0;
     }
-    public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>>? expression, CancellationToken cancellationToken = default)
+
+    public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>>? whereExpression,
+        CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {expression});
-        return await CountInternalAsync(expression, null, cancellationToken).ConfigureAwait(false) > 0;
+        _logger.LogMethodCall(new { whereExpression });
+        return await CountInternalAsync(whereExpression, null, cancellationToken).ConfigureAwait(false) > 0;
     }
 
     public async Task<TEntity?> CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {entity});
+        _logger.LogMethodCall(new { entity });
         Guard.Against.Null(entity);
         Guard.Against.NullOrWhiteSpace(entity.Id);
         Guard.Against.NullOrWhiteSpace(entity.PartitionKey);
@@ -256,7 +366,7 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         }
         catch (CosmosException cex)
         {
-            _logger.LogCosmosException(new {entity}, cex);
+            _logger.LogCosmosException(new { entity }, cex);
             return null;
         }
     }
@@ -264,7 +374,7 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
     public async Task CreateAsBatchAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         var enumeratedEntities = entities.ToList();
-        _logger.LogMethodCall(new {enumeratedEntities});
+        _logger.LogMethodCall(new { enumeratedEntities });
         Guard.Against.NullOrEmpty(enumeratedEntities, nameof(entities));
 
         if (enumeratedEntities.Select(x => x.PartitionKey).Distinct(StringComparer.Ordinal).Skip(1).Any())
@@ -288,14 +398,14 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         }
         catch (CosmosException cex)
         {
-            _logger.LogCosmosException(new {enumeratedEntities}, cex);
+            _logger.LogCosmosException(new { enumeratedEntities }, cex);
             throw new CosmosFriendlyException("Batch create failed. See inner exception for details.", cex);
         }
     }
 
     public async Task<TEntity?> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {entity});
+        _logger.LogMethodCall(new { entity });
         Guard.Against.Null(entity);
         Guard.Against.NullOrWhiteSpace(entity.Id);
         Guard.Against.NullOrWhiteSpace(entity.PartitionKey);
@@ -305,7 +415,8 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         try
         {
             var result = await container
-                .ReplaceItemAsync(entity, entity.Id, new PartitionKey(entity.PartitionKey), cancellationToken: cancellationToken)
+                .ReplaceItemAsync(entity, entity.Id, new PartitionKey(entity.PartitionKey),
+                    cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
             _logger.LogCosmosDiagnosticsTrace("Update/replace item", result.RequestCharge, result.Diagnostics);
 
@@ -313,14 +424,15 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         }
         catch (CosmosException cex)
         {
-            _logger.LogCosmosException(new {entity}, cex);
+            _logger.LogCosmosException(new { entity }, cex);
             return null;
         }
     }
 
-    public async Task<TEntity?> PatchAsync(JsonPatch patch, string id, string partitionKeyValue, CancellationToken cancellationToken = default)
+    public async Task<TEntity?> PatchAsync(JsonPatch patch, string id, string partitionKeyValue,
+        CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {patch, id, partitionKeyValue});
+        _logger.LogMethodCall(new { patch, id, partitionKeyValue });
         Guard.Against.Null(patch);
         Guard.Against.NullOrWhiteSpace(id);
         Guard.Against.NullOrWhiteSpace(partitionKeyValue);
@@ -337,20 +449,22 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         }
         catch (CosmosException cex)
         {
-            _logger.LogCosmosException(new {patch, id, partitionKeyValue}, cex);
+            _logger.LogCosmosException(new { patch, id, partitionKeyValue }, cex);
             throw;
         }
     }
 
     public Task<bool> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {entity});
+        _logger.LogMethodCall(new { entity });
         Guard.Against.Null(entity);
         return DeleteAsync(entity.Id, entity.PartitionKey, cancellationToken);
     }
-    public async Task<bool> DeleteAsync(string id, string partitionKeyValue, CancellationToken cancellationToken = default)
+
+    public async Task<bool> DeleteAsync(string id, string partitionKeyValue,
+        CancellationToken cancellationToken = default)
     {
-        _logger.LogMethodCall(new {id, partitionKeyValue});
+        _logger.LogMethodCall(new { id, partitionKeyValue });
         Guard.Against.NullOrWhiteSpace(id);
         Guard.Against.NullOrWhiteSpace(partitionKeyValue);
 
@@ -367,7 +481,7 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         }
         catch (CosmosException cex)
         {
-            _logger.LogCosmosException(new {id, partitionKeyValue}, cex);
+            _logger.LogCosmosException(new { id, partitionKeyValue }, cex);
             return false;
         }
     }
@@ -378,9 +492,10 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         _logger.LogMethodCall(new { enumerateEntities = enumeratedEntities });
         Guard.Against.NullOrEmpty(enumeratedEntities, nameof(entities));
 
-        var distinctPartitionKeys = enumeratedEntities.Select(x => x.PartitionKey).Distinct(StringComparer.Ordinal).ToList();
+        var distinctPartitionKeys =
+            enumeratedEntities.Select(x => x.PartitionKey).Distinct(StringComparer.Ordinal).ToList();
 
-        if(!distinctPartitionKeys.Any())
+        if (!distinctPartitionKeys.Any())
             throw new CosmosFriendlyException(
                 "Cannot delete items that have no partition key");
 
@@ -390,10 +505,12 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
 
         return DeleteAsBatchAsync(enumeratedEntities.Select(x => x.Id), distinctPartitionKeys[0], cancellationToken);
     }
-    public async Task DeleteAsBatchAsync(IEnumerable<string> ids, string partitionKeyValue, CancellationToken cancellationToken = default)
+
+    public async Task DeleteAsBatchAsync(IEnumerable<string> ids, string partitionKeyValue,
+        CancellationToken cancellationToken = default)
     {
         var enumeratedIds = ids.ToList();
-        _logger.LogMethodCall(new {enumeratedIds, partitionKeyValue});
+        _logger.LogMethodCall(new { enumeratedIds, partitionKeyValue });
         Guard.Against.NullOrEmpty(enumeratedIds, nameof(ids));
         Guard.Against.NullOrWhiteSpace(partitionKeyValue);
 
@@ -414,7 +531,7 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         }
         catch (CosmosException cex)
         {
-            _logger.LogCosmosException(new {enumeratedIds, partitionKeyValue}, cex);
+            _logger.LogCosmosException(new { enumeratedIds, partitionKeyValue }, cex);
             throw new CosmosFriendlyException("Batch delete failed. See inner exception for details.", cex);
         }
     }
