@@ -1,5 +1,5 @@
 import {API_BASE_URL, FindApi, PostApi} from "@/services/api-abstractions";
-import {z, ZodSchema} from "zod";
+import {z} from "zod";
 
 export class ExampleApi	implements
 	FindApi<ExampleObj>,
