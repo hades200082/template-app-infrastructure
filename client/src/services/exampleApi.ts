@@ -7,7 +7,7 @@ export class ExampleApi	implements
 {
 	baseUrl: string;
 
-	constructor(getResultValidator:ZodSchema, postInputValidator:ZodSchema, postResultValidator:ZodSchema) {
+	constructor() {
 		this.baseUrl = `${API_BASE_URL}/v1/example`
 	}
 
