@@ -36,7 +36,6 @@ export class ExampleApi	implements
 
 }
 
-// TODO define zod & type for ExampleEntity
 const ExampleObjSchema = z.object({
 	id: z.string(),
 	name: z.string()

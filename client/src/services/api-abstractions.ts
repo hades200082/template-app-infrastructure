@@ -31,3 +31,4 @@ export interface DeleteApi<TDeleteResult> extends ApiAbstractions {
 }
 
 // TODO define zod and types for ValidationProblem and Problem
+// TODO define zod and types for JsonPatch
