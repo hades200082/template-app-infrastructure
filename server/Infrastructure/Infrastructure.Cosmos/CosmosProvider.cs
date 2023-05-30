@@ -17,27 +17,15 @@ internal sealed class CosmosProvider : ICosmosProvider
     private static Container? _leaseContainer;
 
     public CosmosProvider(
-        IOptions<CosmosOptions> options,
-        IHttpClientFactory httpClientFactory,
-        IHostEnvironment environment
-    )
+        CosmosClient client, IOptions<CosmosOptions> options)
     {
+        _client = client;
+
         if (!options.Value.Validate())
-            throw new EnvironmentConfigurationException("CosmosOptions are not valid. Check that you have created the appropriate environment variables.");
+            throw new EnvironmentConfigurationException(
+                "CosmosOptions are not valid. Check that you have created the appropriate environment variables.");
 
         _options = options.Value;
-
-        var builder = new CosmosClientBuilder(_options.AccountEndpoint, _options.AccountKey)
-            .WithSerializerOptions(new CosmosSerializationOptions
-            {
-                PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-            })
-            .WithHttpClientFactory(() => httpClientFactory.CreateClient(nameof(CosmosClient)));
-
-        if (environment.IsLocal())
-            builder.WithConnectionModeGateway();
-
-        _client = builder.Build();
     }
 
     public async Task<Container> GetContainerAsync(CancellationToken cancellationToken = default)

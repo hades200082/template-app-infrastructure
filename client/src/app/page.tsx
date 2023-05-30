@@ -1,5 +1,11 @@
 import Image from 'next/image'
 
+// TODO: Add controls and functionality to POST, PUT, PATCH, GET, FIND and DELETE ExampleEntity items
+// TODO: Implement JSONPatch from front-end through Api controller all the way to cosmos, respecting the 10 item limit
+// TODO: Implement all verbs for ExampleEntity
+// TODO: Implement filtering in GET using DynamicLinq in API/CosmosRepository
+
+
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">

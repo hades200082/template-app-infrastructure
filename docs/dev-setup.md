@@ -1,3 +1,5 @@
+[TOC]
+
 # Developer Setup
 
 This repo uses [docker-compose](./docker-compose.yml) including the following services:
@@ -104,3 +106,20 @@ Use `docker compose up -d` to spin them up again as this will recreate the conta
 2. Open the [client](../client) folder in your terminal/CLI
 3. Ensure that all dependencies are installed using `npm install`
 4. Start the NextJS application using `npm run dev`
+
+## Troubleshooting
+
+### Cosmos DB Emulator is not working
+The docker image for the cosmos DB emulator has a built-in evaluation period after which time the emulator container will fail to start. If you check the logs you will see a message stating "Error: The evaluation period has expired.". This is discussed in a github issue at https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/60
+
+To fix this issue and get up and running again run the following commands:
+
+```bash
+docker compose down
+docker compose pull
+docker compose up -d
+```
+
+This removes the docker containers, pulls the latest images needed for the respective services, then recreates and starts the containers.
+
+> ***Note:** this has the potential to introduce bugs if the services are updated with changes that break backwards compatibility.*

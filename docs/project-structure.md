@@ -51,19 +51,19 @@ Registers all `IValidator` instances from all loaded assemblies for use with Flu
 
 #### Application.Abstractions
 
-TBC
+Contains interfaces and abstract classes that can be used for dependency injection or implemented/inherited in other projects and allows other projects to require only the abstractions and not care about the implementations.
 
 #### Application.CQRS
 
-TBC
+All commands, queries and notifications relating to the application along with their handlers where appropriate. Notification Handlers should be placed in the assembly that needs to handle the notification rather than in here.
 
 #### Application.DtoModels
 
-TBC
+Simple DTOs for the application layer.
 
 #### Application.Mappers
 
-TBC
+Mapper definitions for Entity > Application DTO.
 
 #### Application.Messagemodels
 
@@ -75,7 +75,13 @@ Only POCO models should be located in this class library project.
 
 ### Domain
 
-TBC
+#### Domain.Abstractions
+
+Contains interfaces and abstract classes that can be used for dependency injection or implemented/inherited in other projects and allows other projects to require only the abstractions and not care about the implementations.
+
+#### Domain.Entities
+
+Home of the entities.
 
 ## Client
 

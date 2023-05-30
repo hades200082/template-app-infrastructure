@@ -13,6 +13,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="6.0.5" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.5" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="6.0.5" />
     <PackageReference Include="AsyncFixer" Version="1.6.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -41,6 +44,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.CQRS\Application.CQRS.csproj" />
     <ProjectReference Include="..\Application\Application.DtoModels\Application.DtoModels.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.AMQP\Infrastructure.AMQP.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.Cosmos\Infrastructure.Cosmos.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.Logging\Infrastructure.Logging.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.Storage\Infrastructure.Storage.csproj" />

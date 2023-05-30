@@ -39,7 +39,7 @@ public class ExampleController : ControllerBase
     /// <response code="200">Found</response>
     /// <response code="400">Validation failed</response>
     /// <response code="404">Object not found</response>
-    [HttpGet("{id}")]
+    [HttpGet("{id}", Name = "Find")]
     [ProducesResponseType(typeof(ExampleEntityResponseModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -84,7 +84,7 @@ public class ExampleController : ControllerBase
             .ConfigureAwait(false);
 
         return createResult.Match<IActionResult>(
-            x => CreatedAtRoute( "Get", new { x.Id }, new ExampleEntityDtoMapper().ToResponse(x)),
+            x => CreatedAtRoute( "Find", new { x.Id }, new ExampleEntityDtoMapper().ToResponse(x)),
             error => Problem(error.Value, statusCode: StatusCodes.Status500InternalServerError)
         );
     }

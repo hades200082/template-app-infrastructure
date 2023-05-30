@@ -1,9 +1,11 @@
 ﻿using System.Text.RegularExpressions;
 using Ardalis.GuardClauses;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Shared.Core;
 
 namespace Infrastructure.Cosmos;
@@ -51,6 +53,28 @@ public static class ServiceCollectionExtensions
 
                 return handler;
             });
+
+        services.AddSingleton<CosmosClient>(serviceProvider =>
+        {
+            var options = serviceProvider.GetRequiredService<IOptions<CosmosOptions>>().Value;
+            var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+
+            if (!options.Validate())
+                throw new EnvironmentConfigurationException(
+                    "CosmosOptions are not valid. Check that you have created the appropriate environment variables.");
+
+            var builder = new CosmosClientBuilder(options.AccountEndpoint, options.AccountKey)
+                .WithSerializerOptions(new CosmosSerializationOptions
+                {
+                    PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+                })
+                .WithHttpClientFactory(() => httpClientFactory.CreateClient(nameof(CosmosClient)));
+
+            if (environment.IsLocal())
+                builder.WithConnectionModeGateway();
+
+            return builder.Build();
+        });
 
         services.AddSingleton<ICosmosProvider, CosmosProvider>();
         services.AddSingleton<IChangeFeedProvider, ChangeFeedProvider>();

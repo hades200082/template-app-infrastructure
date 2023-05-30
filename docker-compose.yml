@@ -20,7 +20,7 @@ networks:
 services:
   cosmosdb:
     container_name: cosmosdb
-    image: "mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator"
+    image: "mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest"
     restart: unless-stopped
     mem_limit: 3G
     cpu_count: 2

@@ -1,12 +1,28 @@
 using Api.Host;
+using HealthChecks.UI.Client;
+using Infrastructure.AMQP;
 using Infrastructure.Cosmos;
 using Infrastructure.Logging;
 using Infrastructure.Storage;
 using Infrastructure.Validation;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Versioning;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseLogging();
+
+builder.Services.AddHealthChecks()
+    .AddCosmos()
+    .AddAMQP(builder.Environment)
+    .AddStorage();
+
+builder.Services.AddHealthChecksUI(opt => {
+        opt.SetEvaluationTimeInSeconds(30);
+        opt.MaximumHistoryEntriesPerEndpoint(60);
+        opt.AddHealthCheckEndpoint("app", "/_health");
+        // opt.AddHealthCheckEndpoint(name: "app", uri: "~/_health");
+    })
+    .AddInMemoryStorage();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -46,5 +62,17 @@ app.UseReDoc();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.UseHealthChecks("/_health", new HealthCheckOptions
+{
+    Predicate = _ => true,
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+});
+app.UseHealthChecksUI(options =>
+{
+    options.UIPath = "/healthchecks-ui";
+    options.ApiPath = "/healthchecks-api";
+    options.UseRelativeApiPath = false;
+    options.UseRelativeResourcesPath = false;
+});
 
 app.Run();

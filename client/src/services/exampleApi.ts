@@ -1,5 +1,13 @@
-import {API_BASE_URL, FindApi, PostApi} from "@/services/api-abstractions";
-import {z} from "zod";
+import {
+	API_BASE_URL,
+	ApiErrorSchema,
+	FindApi,
+	PostApi,
+	ApiError,
+	ApiValidationError,
+	ApiValidationErrorSchema
+} from '@/services/api-abstractions'
+import {z, ZodSchema} from 'zod'
 
 export class ExampleApi	implements
 	FindApi<ExampleObj>,
@@ -11,15 +19,31 @@ export class ExampleApi	implements
 		this.baseUrl = `${API_BASE_URL}/v1/example`
 	}
 
-	async findAsync(id: string): Promise<ExampleObj> {
+	async findAsync(id: string): Promise<ExampleObj|ApiError|null> {
 		const response = await fetch(`${this.baseUrl}/${id}`);
-		if(response.status !== 200){ // Ok
-			// handle error here
+
+		const json = await response.json();
+
+		if(response.status !== 200){ // not an "Ok" response
+			if(response.status === 404) {
+				console.info(`${id} not found`);
+				return null // null when not found
+			}
+
+			// Otherwise return the ApiError - the consumer must deal with this.
+			else {
+				const error = await ApiErrorSchema.parseAsync(json);
+				console.error(error);
+				return error;
+			}
 		}
-		return await ExampleObjSchema.parseAsync(await response.json());
+
+		// All good, let's parse the response
+		return await this.parseResult<ExampleObj>(json, ExampleObjSchema);
 	}
 
-	async postAsync(obj: CreateExampleObj): Promise<ExampleObj> {
+	async postAsync(obj: CreateExampleObj): Promise<ExampleObj|ApiValidationError|ApiError> {
+		console.group("postAsync");
 		const model = await CreateExampleObjSchema.parseAsync(obj);
 
 		const response = await fetch(this.baseUrl, {
@@ -27,11 +51,46 @@ export class ExampleApi	implements
 			body: JSON.stringify(model)
 		})
 
+		const json = await response.json();
+
 		if(response.status !== 201){ // created
-			// handle error here
+			if(response.status === 400) {
+				// Bad Request is typically used for validation errors
+				const validationError = await ApiValidationErrorSchema.parseAsync(json)
+				console.warn(validationError)
+				return validationError
+			}
+			else {
+				const error = await ApiErrorSchema.parseAsync(json);
+				console.error(error);
+				return error;
+			}
 		}
 
-		return await ExampleObjSchema.parseAsync(await response.json());
+		console.info(`POST request successfully sent to ${this.baseUrl}`);
+
+		// All good, let's parse the response
+		const finalResult = await this.parseResult<ExampleObj>(json, ExampleObjSchema);
+
+		console.groupEnd()
+
+		return finalResult;
+	}
+
+	async parseResult<TResult>(obj: any, schema: ZodSchema): Promise<ApiError | TResult> {
+		const parseResult = await schema.safeParseAsync(obj);
+
+		if(!parseResult.success) {
+			console.error("The value returned by the server does not match the ExampleObjSchema", parseResult, obj);
+			return await ApiErrorSchema.parseAsync({
+				type: 'ResponseValidationError',
+				title: 'The server returned an unexpected schema but the item may have been created.',
+				detail: parseResult.error,
+				instance: JSON.stringify(obj)
+			})
+		}
+
+		return parseResult.data;
 	}
 
 }
