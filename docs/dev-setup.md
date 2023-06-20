@@ -107,6 +107,12 @@ Use `docker compose up -d` to spin them up again as this will recreate the conta
 3. Ensure that all dependencies are installed using `npm install`
 4. Start the NextJS application using `npm run dev`
 
+## Infrastructure Components
+
+A number of the features of this template are controlled via class libraries `Infrastructure.*`.
+
+See [Infrastructure Components](./infrastructure/index.md) for more info
+
 ## Troubleshooting
 
 ### Cosmos DB Emulator is not working

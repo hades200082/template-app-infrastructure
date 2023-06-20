@@ -1,0 +1,3 @@
+﻿# Infrastructure.AMQP
+
+TBC
