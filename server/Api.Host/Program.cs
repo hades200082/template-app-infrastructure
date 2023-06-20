@@ -2,6 +2,7 @@ using Api.Host;
 using HealthChecks.UI.Client;
 using Infrastructure.AMQP;
 using Infrastructure.Cosmos;
+using Infrastructure.Identity;
 using Infrastructure.Logging;
 using Infrastructure.Storage;
 using Infrastructure.Validation;
@@ -52,6 +53,7 @@ builder.Services.AddCosmos(builder.Configuration, builder.Environment);
 builder.Services.AddStorage(builder.Configuration, builder.Environment);
 builder.Services.AddMediator();
 builder.Services.AddValidation();
+builder.Services.AddIdentity(builder.Configuration);
 
 var app = builder.Build();
 
@@ -60,7 +62,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseReDoc();
 app.UseHttpsRedirection();
-app.UseAuthorization();
+app.UseIdentity();
 app.MapControllers();
 app.UseHealthChecks("/_health", new HealthCheckOptions
 {

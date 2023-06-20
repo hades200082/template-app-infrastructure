@@ -46,6 +46,7 @@
     <ProjectReference Include="..\Application\Application.DtoModels\Application.DtoModels.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.AMQP\Infrastructure.AMQP.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.Cosmos\Infrastructure.Cosmos.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.Identity\Infrastructure.Identity.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.Logging\Infrastructure.Logging.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.Storage\Infrastructure.Storage.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.Validation\Infrastructure.Validation.csproj" />
