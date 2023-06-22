@@ -7,6 +7,6 @@ public static class HostExtensions
     public static void UseIdentity(this WebApplication app)
     {
         if(app.Configuration.GetSection("Identity").GetChildren().Count() == 1)
-            app.UseAuthentication();
+            app.UseAuthorization(); // No longer need UseAuthentication()
     }
 }

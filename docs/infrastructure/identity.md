@@ -6,32 +6,19 @@ This should work with any Identity Service that supports OpenID Connect (OIDC). 
 
 ## Usage & configuraton
 
-Configure the module in your appSettings using the JSON below (remove the comments):
+Configure the module in the "Authentication" section of your appSettings:
+
+See https://auth0.com/blog/whats-new-in-dotnet-7-for-authentication-and-authorization/
 
 ```json
 {
-  "Identity": {
-    "ClientSecret": "", // The Client Secret from your identity service 
-    "ClientId": "", // The client ID from your identity service
-    "Authority": "", // The URL of your tenant's Authority
-    
-    // Below are optional properties that you may or may not want/need 
-    // depending on your applications requirements and your 
-    // Identity Service of choice
-    
-    // The list of scopes being requested from the Identity Service
-    // "openid" is required, others are optional.
-    "Scope":[ 
-      "openid",
-      "profile",
-      "email"
-    ],
-    "TokenValidationParameters": {
-      "NameClaimType": "name", // The Claim Type of the "username" for the user, set to "name" for most providers
-      "ValidateAudience": true, // If true (default) then ValidAudiance must be set, and configured in the Identity Service
-      "ValidateIssuer": true, // If true (default) then at least one ValidIssuer is required
-      "ValidAudience": "",
-      "ValidIssuers": []
+  "Authentication": {
+    "Schemes": {
+      "Bearer": {
+        "Authority": "https://leec-distinction-dev.eu.auth0.com",
+        "ValidAudiences": ["https://leec-distinction.dev"],
+        "ValidIssuer": "leec-distinction-dev.eu.auth0.com"
+      }
     }
   }
 }

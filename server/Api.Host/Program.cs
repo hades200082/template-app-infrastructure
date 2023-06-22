@@ -8,6 +8,7 @@ using Infrastructure.Storage;
 using Infrastructure.Validation;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseLogging();
@@ -59,7 +60,6 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
-app.UseSwaggerUI();
 app.UseReDoc();
 app.UseHttpsRedirection();
 app.UseIdentity();
