@@ -8,5 +8,5 @@ I've made the repo public and anyone may use it however they wish. I will be upd
 ## Index
 
 - [Requirements](docs/requirements.md)
-- [Developer Setup](docs/dev-setup.md)
+- [Developer Setup](docs/dev-setup/index.md)
 - [Project structure](docs/project-structure.md)
