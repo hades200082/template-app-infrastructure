@@ -19,8 +19,14 @@ export class ExampleApi	implements
 		this.baseUrl = `${API_BASE_URL}/v1/example`
 	}
 
-	async findAsync(id: string): Promise<ExampleObj|ApiError|null> {
-		const response = await fetch(`${this.baseUrl}/${id}`);
+	async findAsync(id: string, accessToken: string): Promise<ExampleObj|ApiError|null> {
+		const response = await fetch(
+			`${this.baseUrl}/${id}`, {
+				headers: {
+					Authorization: `Bearer ${accessToken}`
+				}
+			}
+		);
 
 		const json = await response.json();
 
@@ -42,11 +48,14 @@ export class ExampleApi	implements
 		return await this.parseResult<ExampleObj>(json, ExampleObjSchema);
 	}
 
-	async postAsync(obj: CreateExampleObj): Promise<ExampleObj|ApiValidationError|ApiError> {
+	async postAsync(obj: CreateExampleObj, accessToken: string): Promise<ExampleObj|ApiValidationError|ApiError> {
 		console.group("postAsync");
 		const model = await CreateExampleObjSchema.parseAsync(obj);
 
 		const response = await fetch(this.baseUrl, {
+			headers: {
+				Authorization: `Bearer ${accessToken}`
+			},
 			method: "POST",
 			body: JSON.stringify(model)
 		})
