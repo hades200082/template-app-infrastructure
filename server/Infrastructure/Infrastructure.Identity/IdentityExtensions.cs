@@ -11,7 +11,7 @@ public static class IdentityExtensions
     /// </summary>
     /// <param name="identity"></param>
     /// <returns></returns>
-    public static string? ExternalId(this ClaimsIdentity identity)
+    public static string? ExternalId(this ClaimsPrincipal identity)
     {
         return identity.FindFirst("sub")?.Value;
     }

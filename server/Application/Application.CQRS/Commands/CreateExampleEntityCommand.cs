@@ -1,13 +1,5 @@
-﻿using Application.DtoModels;
-using Application.Mappers;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 using Domain.Entities;
-using Infrastructure.Cosmos;
-using Mediator;
-using Microsoft.Extensions.Logging;
-using OneOf;
-using OneOf.Types;
-using Shared.Core;
 
 namespace Application.CQRS.Commands;
 

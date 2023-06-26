@@ -39,7 +39,7 @@ public sealed class CosmosRepository<TEntity> : IRepository<TEntity>
         catch (CosmosException cex)
         {
             _logger.LogCosmosException(new { id, partitionKeyValue }, cex);
-            return null;
+            throw new CosmosFriendlyException("Query failed. See inner exception for details.", cex);
         }
 
         return result.Resource;
