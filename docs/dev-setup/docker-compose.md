@@ -78,3 +78,24 @@ Use `docker compose up -d` to spin them up again as this will recreate the conta
 - Cosmos Explorer: https://localhost:8081/_explorer/index.html
 - RabbitMQ Manager: http://localhost:15672/ (u: `guest` | p: `guest`)
 - Azurite: Use [Azure Storage Explorer](https://azure.microsoft.com/en-gb/products/storage/storage-explorer/) to connect to the local storage emulator.
+
+
+## Troubleshooting
+
+### Can't connect to Cosmos DB
+
+1. **Check that the container is running**
+   
+   The CosmosDB Emulator has an expiry and the image needs to be refreshed
+   periodically. To refresh the image run `docker compose pull`
+   
+2. **Check that your launchSettings.json or similar specifies "Local" as the environment**
+   
+   The local setup for this project relies on the environment being called "Local"
+   in order to properly configure access to local services in docker.
+   ```json
+   "environmentVariables": {
+     "DOTNET_ENVIRONMENT": "Local",
+     "ASPNETCORE_ENVIRONMENT": "Local"
+   }
+   ```

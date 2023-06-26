@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Net.Mime;
 using Api.Host.Mappers;
 using Api.Host.Models.v1.Example;
 using Api.Host.Models.v1.Example.Requests;
