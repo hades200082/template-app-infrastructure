@@ -1,4 +1,4 @@
-using Api.Host;
+﻿using Api.Host;
 using HealthChecks.UI.Client;
 using Infrastructure.AMQP;
 using Infrastructure.Cosmos;
@@ -55,6 +55,15 @@ builder.Services.AddStorage(builder.Configuration, builder.Environment);
 builder.Services.AddMediator();
 builder.Services.AddValidation();
 builder.Services.AddIdentity(builder.Configuration);
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(b =>
+    {
+        b.WithOrigins("http://localhost:3000")
+            .WithMethods("DELETE", "GET", "PUT", "POST")
+            .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -76,5 +85,6 @@ app.UseHealthChecksUI(options =>
     options.UseRelativeApiPath = false;
     options.UseRelativeResourcesPath = false;
 });
+app.UseCors();
 
 app.Run();
