@@ -18,6 +18,9 @@ export const authOptions:NextAuthOptions = {
 		})
 	],
 	secret: process.env.NEXTAUTH_SECRET!,
+	pages: {
+		signIn: "/login"
+	},
 	callbacks: {
 		async session({ session, token }) {
 			session.user.identityId = token.id as string;
