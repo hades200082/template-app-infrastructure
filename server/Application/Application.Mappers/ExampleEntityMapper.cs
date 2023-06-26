@@ -1,7 +1,4 @@
-﻿using Application.DtoModels;
-using Application.MessageModels.Events;
-using Domain.Entities;
-using Riok.Mapperly.Abstractions;
+﻿using Application.MessageModels.Events;
 
 namespace Application.Mappers;
 
