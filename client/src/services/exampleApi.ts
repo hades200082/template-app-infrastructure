@@ -6,8 +6,8 @@ import {
 	ApiError,
 	ApiValidationError,
 	ApiValidationErrorSchema
-} from '@/services/api-abstractions'
-import {z, ZodSchema} from 'zod'
+} from "@/services/api-abstractions"
+import { z, ZodSchema } from "zod"
 
 export class ExampleApi	implements
 	FindApi<ExampleObj>,
@@ -38,7 +38,7 @@ export class ExampleApi	implements
 			}
 		}
 
-		// All good, let's parse the response
+		// All good, let"s parse the response
 		return await this.parseResult<ExampleObj>(json, ExampleObjSchema);
 	}
 
@@ -69,7 +69,7 @@ export class ExampleApi	implements
 
 		console.info(`POST request successfully sent to ${this.baseUrl}`);
 
-		// All good, let's parse the response
+		// All good, let"s parse the response
 		const finalResult = await this.parseResult<ExampleObj>(json, ExampleObjSchema);
 
 		console.groupEnd()
@@ -83,8 +83,8 @@ export class ExampleApi	implements
 		if(!parseResult.success) {
 			console.error("The value returned by the server does not match the ExampleObjSchema", parseResult, obj);
 			return await ApiErrorSchema.parseAsync({
-				type: 'ResponseValidationError',
-				title: 'The server returned an unexpected schema but the item may have been created.',
+				type: "ResponseValidationError",
+				title: "The server returned an unexpected schema but the item may have been created.",
 				detail: parseResult.error,
 				instance: JSON.stringify(obj)
 			})
