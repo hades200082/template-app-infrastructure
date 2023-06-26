@@ -14,7 +14,7 @@ public readonly struct ErrorDetails : IEquatable<ErrorDetails>
 
     public override bool Equals(object? obj)
     {
-        return obj is not null && this == (ErrorDetails)obj;
+        return Equals((ErrorDetails)(obj ?? new ErrorDetails("")));
     }
 
     public override int GetHashCode()
@@ -34,6 +34,6 @@ public readonly struct ErrorDetails : IEquatable<ErrorDetails>
 
     public bool Equals(ErrorDetails other)
     {
-        throw new NotImplementedException();
+        return this == other;
     }
 }
