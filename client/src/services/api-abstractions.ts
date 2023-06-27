@@ -1,12 +1,28 @@
 import { cleanUrl } from "@/utils/urlHelper";
+import { getServerSession } from "next-auth";
 import { z, ZodSchema } from "zod"
+import { authOptions } from "./auth";
+import { getSession, useSession } from "next-auth/react";
 
 export const API_BASE_URL = cleanUrl(process.env.API_BASE_URL!);
 
 interface ApiAbstractions {
 	baseUrl:string;
-	accessToken: string;
 	parseResult: <TResult>(obj:any, schema:ZodSchema) => Promise<TResult|ApiError>
+}
+
+export class CoreApi {
+	constructor(){}
+
+	async getToken() {
+		if(typeof window === "undefined") {
+			const session = await getServerSession(authOptions);
+			return session!.accessToken
+		}
+
+		const session = await getSession();
+		return session!.accessToken;
+	}
 }
 
 export interface FindApi<TFindResult> extends ApiAbstractions {

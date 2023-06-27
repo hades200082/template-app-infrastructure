@@ -5,31 +5,35 @@ import {
 	PostApi,
 	ApiError,
 	ApiValidationError,
-	ApiValidationErrorSchema
+	ApiValidationErrorSchema,
+	CoreApi
 } from "@/services/api-abstractions"
 import { z, ZodSchema } from "zod"
 
-export class ExampleApi	implements
+export class ExampleApi
+extends CoreApi
+implements
 	FindApi<ExampleObj>,
 	PostApi<CreateExampleObj, ExampleObj>
 {
 	baseUrl: string;
-	accessToken: string;
 
-	constructor(accessToken: string) {
+	constructor() {
+		super();
 		this.baseUrl = `${API_BASE_URL}v1/example`;
-		this.accessToken = accessToken;
 	}
 
 	async findAsync(id: string): Promise<ExampleObj|ApiError|null> {
 		const response = await fetch(
 			`${this.baseUrl}/${id}`, {
 				headers: {
-					Authorization: `Bearer ${this.accessToken}`
+					Authorization: `Bearer ${await this.getToken()}`
 				}
 			}
 		);
 
+		console.log(response);
+		
 		const json = await response.json();
 
 		if(response.status !== 200){ // not an "Ok" response
@@ -56,7 +60,7 @@ export class ExampleApi	implements
 
 		const response = await fetch(this.baseUrl, {
 			headers: {
-				Authorization: `Bearer ${this.accessToken}`
+				Authorization: `Bearer ${await this.getToken()}`
 			},
 			method: "POST",
 			body: JSON.stringify(model)

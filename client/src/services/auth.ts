@@ -14,7 +14,8 @@ export const authOptions:NextAuthOptions = {
 		Auth0({
 			clientId: process.env.AUTH_CLIENT_ID!,
 			clientSecret: process.env.AUTH_CLIENT_SECRET!,
-			issuer: process.env.AUTH_ISSUER!
+			issuer: process.env.AUTH_ISSUER!,
+			authorization: { params: { scope: "openid email profile", audience: "https://leec-distinction.dev" } }
 		})
 	],
 	secret: process.env.NEXTAUTH_SECRET!,
