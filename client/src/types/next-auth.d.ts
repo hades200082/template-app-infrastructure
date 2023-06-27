@@ -6,6 +6,7 @@ declare module "next-auth" {
    */
 		interface Session {
 			accessToken: string,
+			error: string,
 			user: {
 				identityId: string,
 				// TODO: add anymore user specific data to session, e.g. email, first/last name etc
