@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Api.Host.Mappers;
 using Api.Host.Models.v1.Example;
 using Api.Host.Models.v1.Example.Requests;
@@ -6,6 +6,7 @@ using Application.CQRS.Commands;
 using Application.CQRS.Queries;
 using FluentValidation;
 using Mediator;
+using Microsoft.Azure.Cosmos.Linq;
 using Shared.Core;
 
 namespace Api.Host.Controllers.v1;
@@ -49,10 +50,40 @@ public class ExampleController : ControllerBase
             return ValidationProblem(ModelState);
 
         var queryResult = await _mediator.Send(new GetExampleEntityQuery(id), cancellationToken).ConfigureAwait(false);
+        
+        return queryResult.Match<IActionResult>(
+            x => Ok(x.ToResponse()),
+            _ => NotFound()
+        );
+    }
+
+    /// <summary>
+    /// Get by Name
+    /// </summary>
+    /// <param name="filter"></param>
+    /// <param name="continuationToken"></param>
+    /// <param name="cancellationToken"></param>
+    /// <response code="200">Found</response>
+    /// <response code="400">Validation failed</response>
+    /// <response code="500">Error</response>
+    [HttpGet]
+    [ProducesResponseType(typeof(PagedData<ExampleEntityResponseModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetPageAsync([FromQuery] GetExampleEntitiesPagedRequest model, CancellationToken cancellationToken)
+    {
+        _logger.LogControllerRequestTrace(ControllerContext.RouteData);
+        if (!ModelState.IsValid)
+            return ValidationProblem(ModelState);
+
+        if (model == null)
+            return Problem("All values can't be null", statusCode: StatusCodes.Status400BadRequest);
+
+        var queryResult = await _mediator.Send(new GetExampleEntitiesPagedQuery(model.Name, model.ContinuationToken), cancellationToken).ConfigureAwait(false);
 
         return queryResult.Match<IActionResult>(
-            x => Ok(new ExampleEntityDtoMapper().ToResponse(x)),
-            _ => NotFound()
+            x => Ok(x.ToPagedResponse()),
+            e => Problem(e.Details, statusCode: StatusCodes.Status500InternalServerError)
         );
     }
 
@@ -83,7 +114,7 @@ public class ExampleController : ControllerBase
             .ConfigureAwait(false);
 
         return createResult.Match<IActionResult>(
-            x => CreatedAtRoute( "Find", new { x.Id }, new ExampleEntityDtoMapper().ToResponse(x)),
+            x => CreatedAtRoute( "Find", new { x.Id }, x.ToResponse()),
             error => Problem(error.Value, statusCode: StatusCodes.Status500InternalServerError)
         );
     }

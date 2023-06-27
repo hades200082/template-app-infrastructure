@@ -1,10 +1,13 @@
 ﻿using Application.MessageModels.Events;
+using Shared.Core;
 
 namespace Application.Mappers;
 
 [Mapper]
-public sealed partial class ExampleEntityMapper
+public static partial class ExampleEntityMapper
 {
-    public partial ExampleEntityCreated EntityToMessage(ExampleEntity entity);
-    public partial ExampleEntityDto EntityToDto(ExampleEntity entity);
+    public static partial ExampleEntityCreated EntityToMessage(this ExampleEntity entity);
+    public static partial ExampleEntityDto ToDto(this ExampleEntity entity);
+
+    public static partial PagedData<ExampleEntityDto> ToPagedDataDto(this IPagedData<ExampleEntity> entity);
 }

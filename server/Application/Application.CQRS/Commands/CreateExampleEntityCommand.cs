@@ -45,6 +45,6 @@ public sealed class CreateExampleEntityCommandHandler : ICommandHandler<CreateEx
         // but it's safer to check than to return a null from a create.
         if (entity is null) return new Error<string>("Create command failed. Please retry.");
 
-        return new ExampleEntityMapper().EntityToDto(entity);
+        return entity.ToDto();
     }
 }
