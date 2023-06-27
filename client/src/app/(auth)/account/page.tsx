@@ -5,8 +5,8 @@ import { ExampleApi } from "@/services/exampleApi";
 
 export default async function Account() {
 	const session = await getServerSession(authOptions);
-	const api = new ExampleApi();
-	const response = await api.findAsync("test", session!.accessToken);
+	const api = new ExampleApi(session!.accessToken);
+	const response = await api.findAsync("test");
 
 	return (
 		<>

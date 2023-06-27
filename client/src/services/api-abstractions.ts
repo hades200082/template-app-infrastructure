@@ -5,31 +5,32 @@ export const API_BASE_URL = cleanUrl(process.env.API_BASE_URL!);
 
 interface ApiAbstractions {
 	baseUrl:string;
+	accessToken: string;
 	parseResult: <TResult>(obj:any, schema:ZodSchema) => Promise<TResult|ApiError>
 }
 
 export interface FindApi<TFindResult> extends ApiAbstractions {
-	findAsync: (id:string, accessToken:string) => Promise<TFindResult|ApiError|null>;
+	findAsync: (id:string) => Promise<TFindResult|ApiError|null>;
 }
 
 export interface GetApi<TGetResult> extends ApiAbstractions {
-	getAsync: (filter:string, orderBy:string, orderDirection:string, accessToken:string) => Promise<TGetResult|ApiError>;
+	getAsync: (filter:string, orderBy:string, orderDirection:string) => Promise<TGetResult|ApiError>;
 }
 
 export interface PostApi<TPostInput, TPostResult> extends ApiAbstractions {
-	postAsync: (obj:TPostInput, accessToken:string) => Promise<TPostResult|ApiValidationError|ApiError>;
+	postAsync: (obj:TPostInput) => Promise<TPostResult|ApiValidationError|ApiError>;
 }
 
 export interface PutApi<TPutInput, TPutResult> extends ApiAbstractions {
-	putAsync: (obj:TPutInput, accessToken:string) => Promise<TPutResult|ApiValidationError|ApiError>;
+	putAsync: (obj:TPutInput) => Promise<TPutResult|ApiValidationError|ApiError>;
 }
 
 export interface PatchApi<TPatchResult> extends ApiAbstractions {
-	patchAsync: (patch:JsonPatch, accessToken:string) => Promise<TPatchResult|ApiValidationError|ApiError>;
+	patchAsync: (patch:JsonPatch) => Promise<TPatchResult|ApiValidationError|ApiError>;
 }
 
 export interface DeleteApi<TDeleteResult> extends ApiAbstractions {
-	deleteAsync: (id:string, accessToken:string) => Promise<TDeleteResult|ApiValidationError|ApiError>;
+	deleteAsync: (id:string) => Promise<TDeleteResult|ApiValidationError|ApiError>;
 }
 
 export const ApiErrorSchema = z.object({

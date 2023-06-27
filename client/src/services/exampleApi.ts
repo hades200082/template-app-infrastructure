@@ -14,16 +14,18 @@ export class ExampleApi	implements
 	PostApi<CreateExampleObj, ExampleObj>
 {
 	baseUrl: string;
+	accessToken: string;
 
-	constructor() {
-		this.baseUrl = `${API_BASE_URL}v1/example`
+	constructor(accessToken: string) {
+		this.baseUrl = `${API_BASE_URL}v1/example`;
+		this.accessToken = accessToken;
 	}
 
-	async findAsync(id: string, accessToken: string): Promise<ExampleObj|ApiError|null> {
+	async findAsync(id: string): Promise<ExampleObj|ApiError|null> {
 		const response = await fetch(
 			`${this.baseUrl}/${id}`, {
 				headers: {
-					Authorization: `Bearer ${accessToken}`
+					Authorization: `Bearer ${this.accessToken}`
 				}
 			}
 		);
@@ -48,13 +50,13 @@ export class ExampleApi	implements
 		return await this.parseResult<ExampleObj>(json, ExampleObjSchema);
 	}
 
-	async postAsync(obj: CreateExampleObj, accessToken: string): Promise<ExampleObj|ApiValidationError|ApiError> {
+	async postAsync(obj: CreateExampleObj): Promise<ExampleObj|ApiValidationError|ApiError> {
 		console.group("postAsync");
 		const model = await CreateExampleObjSchema.parseAsync(obj);
 
 		const response = await fetch(this.baseUrl, {
 			headers: {
-				Authorization: `Bearer ${accessToken}`
+				Authorization: `Bearer ${this.accessToken}`
 			},
 			method: "POST",
 			body: JSON.stringify(model)
