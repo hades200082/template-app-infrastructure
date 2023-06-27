@@ -76,7 +76,7 @@ public class ExampleController : ControllerBase
         if (!ModelState.IsValid)
             return ValidationProblem(ModelState);
 
-        var queryResult = await _mediator.Send(new GetExampleEntitiesPagedQuery(model.Name, model.ContinuationToken), cancellationToken).ConfigureAwait(false);
+        var queryResult = await _mediator.Send(model.ToQuery(), cancellationToken).ConfigureAwait(false);
 
         return queryResult.Match<IActionResult>(
             x => Ok(x.ToPagedResponse()),
