@@ -4,11 +4,11 @@ import Auth0 from "next-auth/providers/auth0";
 export const authOptions:NextAuthOptions = {
 	session: {
 		strategy: "jwt",
-		maxAge: 24*60*60,
-		updateAge: 23*60*60
+		maxAge: parseInt(process.env.AUTH_TOKEN_EXPIRATION_SECONDS!),
+		updateAge: parseInt(process.env.AUTH_TOKEN_UPDATE_AT_SECONDS!)
 	},
 	jwt: {
-		maxAge: 24*60*60
+		maxAge: parseInt(process.env.AUTH_TOKEN_EXPIRATION_SECONDS!)
 	},
 	providers: [
 		Auth0({
