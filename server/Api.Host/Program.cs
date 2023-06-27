@@ -21,8 +21,9 @@ builder.Services.AddHealthChecks()
 builder.Services.AddHealthChecksUI(opt => {
         opt.SetEvaluationTimeInSeconds(30);
         opt.MaximumHistoryEntriesPerEndpoint(60);
+        opt.SetMinimumSecondsBetweenFailureNotifications(60 * 60 * 2);
+        opt.SetHeaderText("My Awesome Healthchecks");
         opt.AddHealthCheckEndpoint("app", "/_health");
-        // opt.AddHealthCheckEndpoint(name: "app", uri: "~/_health");
     })
     .AddInMemoryStorage();
 
@@ -64,12 +65,12 @@ app.UseReDoc();
 app.UseHttpsRedirection();
 app.UseIdentity();
 app.MapControllers();
-app.UseHealthChecks("/_health", new HealthCheckOptions
+app.MapHealthChecks("/_health", new HealthCheckOptions
 {
     Predicate = _ => true,
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
 });
-app.UseHealthChecksUI(options =>
+app.MapHealthChecksUI(options =>
 {
     options.UIPath = "/healthchecks-ui";
     options.ApiPath = "/healthchecks-api";
