@@ -54,11 +54,13 @@ builder.Services.AddStorage(builder.Configuration, builder.Environment);
 builder.Services.AddMediator();
 builder.Services.AddValidation();
 builder.Services.AddIdentity(builder.Configuration);
-builder.Services.AddCors(options =>
+builder.Services.AddCors((options) =>
 {
     options.AddDefaultPolicy(b =>
     {
-        b.WithOrigins("http://localhost:3000")
+        var domains = builder.Configuration.GetSection("CorsDomains").Get<string[]>() ?? Array.Empty<string>();
+
+        b.WithOrigins(domains)
             .WithMethods("DELETE", "GET", "PATCH", "POST", "PUT")
             .AllowAnyHeader();
     });
