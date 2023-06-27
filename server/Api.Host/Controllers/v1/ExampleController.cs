@@ -76,9 +76,6 @@ public class ExampleController : ControllerBase
         if (!ModelState.IsValid)
             return ValidationProblem(ModelState);
 
-        if (model == null)
-            return Problem("All values can't be null", statusCode: StatusCodes.Status400BadRequest);
-
         var queryResult = await _mediator.Send(new GetExampleEntitiesPagedQuery(model.Name, model.ContinuationToken), cancellationToken).ConfigureAwait(false);
 
         return queryResult.Match<IActionResult>(
