@@ -24,8 +24,8 @@ export const authOptions:NextAuthOptions = {
 	callbacks: {
 		async session({ session, token }) {
 			session.user.identityId = token.id as string;
-			session.accessToken = token.accesstoken as string;
-			
+			session.accessToken = token.accessToken as string;
+
 			// TODO: fetch current user profile from api to populate session
 
 			return session;

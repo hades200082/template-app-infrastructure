@@ -8,7 +8,6 @@ declare module "next-auth" {
 			accessToken: string,
 			user: {
 				identityId: string,
-
 				// TODO: add anymore user specific data to session, e.g. email, first/last name etc
 			} & DefaultSession["user"]
 		}

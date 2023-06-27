@@ -8,7 +8,6 @@ using Infrastructure.Storage;
 using Infrastructure.Validation;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseLogging();
@@ -60,7 +59,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(b =>
     {
         b.WithOrigins("http://localhost:3000")
-            .WithMethods("DELETE", "GET", "PUT", "POST")
+            .WithMethods("DELETE", "GET", "PATCH", "POST", "PUT")
             .AllowAnyHeader();
     });
 });

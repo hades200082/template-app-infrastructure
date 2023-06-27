@@ -16,7 +16,7 @@ export class ExampleApi	implements
 	baseUrl: string;
 
 	constructor() {
-		this.baseUrl = `${API_BASE_URL}/v1/example`
+		this.baseUrl = `${API_BASE_URL}v1/example`
 	}
 
 	async findAsync(id: string, accessToken: string): Promise<ExampleObj|ApiError|null> {

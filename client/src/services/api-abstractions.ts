@@ -1,7 +1,7 @@
-import { removeTrailingSlash } from "@/utils/urlHelper";
+import { cleanUrl } from "@/utils/urlHelper";
 import { z, ZodSchema } from "zod"
 
-export const API_BASE_URL = removeTrailingSlash(process.env.API_BASE_URL!);
+export const API_BASE_URL = cleanUrl(process.env.API_BASE_URL!);
 
 interface ApiAbstractions {
 	baseUrl:string;
