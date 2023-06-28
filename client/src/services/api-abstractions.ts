@@ -3,8 +3,9 @@ import { getServerSession } from "next-auth";
 import { z, ZodSchema } from "zod"
 import { authOptions } from "./auth";
 import { getSession, signIn } from "next-auth/react";
+import { ENV } from "@/lib/envSchema";
 
-export const API_BASE_URL = cleanUrl(process.env.API_BASE_URL!);
+export const API_BASE_URL = cleanUrl(ENV.API_BASE_URL);
 
 interface ApiAbstractions {
 	baseUrl:string;

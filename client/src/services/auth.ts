@@ -1,24 +1,25 @@
 import { type NextAuthOptions, type TokenSet } from "next-auth";
 import Auth0 from "next-auth/providers/auth0";
+import { ENV } from "@/lib/envSchema";
 
 export const authOptions:NextAuthOptions = {
 	session: {
 		strategy: "jwt",
-		maxAge: parseInt(process.env.AUTH_TOKEN_EXPIRATION_SECONDS!),
-		updateAge: parseInt(process.env.AUTH_TOKEN_UPDATE_AT_SECONDS!)
+		maxAge: ENV.AUTH_TOKEN_EXPIRATION_SECONDS,
+		updateAge: ENV.AUTH_TOKEN_UPDATE_AT_SECONDS
 	},
 	jwt: {
-		maxAge: parseInt(process.env.AUTH_TOKEN_EXPIRATION_SECONDS!)
+		maxAge: ENV.AUTH_TOKEN_EXPIRATION_SECONDS
 	},
 	providers: [
 		Auth0({
-			clientId: process.env.AUTH_CLIENT_ID!,
-			clientSecret: process.env.AUTH_CLIENT_SECRET!,
-			issuer: process.env.AUTH_ISSUER!,
-			authorization: { params: { scope: "openid email profile", audience: process.env.AUTH_AUDIENCE! } }
+			clientId: ENV.AUTH_CLIENT_ID,
+			clientSecret: ENV.AUTH_CLIENT_SECRET,
+			issuer: ENV.AUTH_ISSUER,
+			authorization: { params: { scope: "openid email profile", audience: ENV.AUTH_AUDIENCE } }
 		})
 	],
-	secret: process.env.NEXTAUTH_SECRET!,
+	secret: ENV.NEXTAUTH_SECRET,
 	pages: {
 		signIn: "/login"
 	},
@@ -45,11 +46,11 @@ export const authOptions:NextAuthOptions = {
 			} 
 			else {
 				try {
-					const response = await fetch(process.env.AUTH_TOKEN_REFRESH_URI!, {
+					const response = await fetch(ENV.AUTH_TOKEN_REFRESH_URI!, {
 						headers: { "Content-Type": "application/x-www-form-urlencoded" },
 						body: new URLSearchParams({
-							client_id: process.env.AUTH_CLIENT_ID!,
-							client_secret: process.env.AUTH_CLIENT_SECRET!,
+							client_id: ENV.AUTH_CLIENT_ID!,
+							client_secret: ENV.AUTH_CLIENT_SECRET!,
 							grant_type: "refresh_token",
 							refresh_token: token.accessToken as string
 						})
