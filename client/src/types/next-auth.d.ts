@@ -6,10 +6,17 @@ declare module "next-auth" {
    */
 		interface Session {
 			accessToken: string,
-			error: string,
+			error?: "RefreshAccessTokenError",
 			user: {
 				identityId: string,
 				// TODO: add anymore user specific data to session, e.g. email, first/last name etc
 			} & DefaultSession["user"]
+		}
+
+		interface JWT {
+			access_token: string,
+			expires_at: number,
+			refresh_token: string,
+			error?: "RefreshAccessTokenError"
 		}
 }
