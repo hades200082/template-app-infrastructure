@@ -1,8 +1,8 @@
 import { authOptions } from "./auth";
 import { cleanUrl } from "@/utils/urlHelper";
 import { ENV } from "@/lib/envSchema";
-import { getSession, signIn } from "next-auth/react";
 import { getServerSession } from "next-auth";
+import { getSession, signIn } from "next-auth/react";
 import { z, ZodSchema } from "zod";
 
 export const API_BASE_URL = cleanUrl(ENV.API_BASE_URL);
