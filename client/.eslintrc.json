@@ -19,25 +19,51 @@
 		}
 	},
 	"rules": {
-		"no-unused-vars": "off",
 		"@typescript-eslint/no-unused-vars": ["error"],
 		"@typescript-eslint/no-non-null-assertion": "off",
-		"no-tabs": "off",
+		"arrow-spacing": [
+			"error", 
+			{ 
+				"before": true,
+				"after": true
+			}
+		],
+		"eol-last": ["error", "always"],
+		"eqeqeq": "error",
 		"indent": [
 			"error",
 			"tab",
 			{ "SwitchCase": 1 }
 		],
-		"semi": [
-			"error",
-			"always"
+		"max-depth": "error",
+		"no-multiple-empty-lines": [
+			"error", 
+			{ 
+				"max": 2,
+				"maxEOF": 1
+			}
 		],
+		"no-process-env": ["error"],
+		"no-tabs": "off",
+		"no-var": "error",
+		"no-unused-vars": "off",
 		"quotes": [
 			"error",
 			"double",
 			{
 				"avoidEscape": true,
 				"allowTemplateLiterals": true
+			}
+		],
+		"semi": [
+			"error",
+			"always"
+		],
+		"sort-imports": 
+		[
+			"warn", 
+			{
+				"ignoreCase": true
 			}
 		],
 		"tailwindcss/no-custom-classname": "off"
