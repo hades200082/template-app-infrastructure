@@ -5,23 +5,34 @@ import {
 	PostApi,
 	ApiError,
 	ApiValidationError,
-	ApiValidationErrorSchema
-} from "@/services/api-abstractions";
-import {z, ZodSchema} from "zod";
+	ApiValidationErrorSchema,
+} from "@/services/api-abstractions"
+import { z, ZodSchema } from "zod"
 
-export class ExampleApi	implements
+export class ExampleApi
+extends CoreApi
+implements
 	FindApi<ExampleObj>,
 	PostApi<CreateExampleObj, ExampleObj>
 {
 	baseUrl: string;
 
 	constructor() {
-		this.baseUrl = `${API_BASE_URL}/v1/example`;
+		super();
+		this.baseUrl = `${API_BASE_URL}v1/example`;
 	}
 
 	async findAsync(id: string): Promise<ExampleObj|ApiError|null> {
-		const response = await fetch(`${this.baseUrl}/${id}`);
+		const response = await fetch(
+			`${this.baseUrl}/${id}`, {
+				headers: {
+					Authorization: `Bearer ${await this.getToken()}`
+				}
+			}
+		);
 
+		console.log(response);
+		
 		const json = await response.json();
 
 		if(response.status !== 200){ // not an "Ok" response
@@ -38,7 +49,7 @@ export class ExampleApi	implements
 			}
 		}
 
-		// All good, let's parse the response
+		// All good, let"s parse the response
 		return await this.parseResult<ExampleObj>(json, ExampleObjSchema);
 	}
 
@@ -47,6 +58,9 @@ export class ExampleApi	implements
 		const model = await CreateExampleObjSchema.parseAsync(obj);
 
 		const response = await fetch(this.baseUrl, {
+			headers: {
+				Authorization: `Bearer ${await this.getToken()}`
+			},
 			method: "POST",
 			body: JSON.stringify(model)
 		});
@@ -69,7 +83,7 @@ export class ExampleApi	implements
 
 		console.info(`POST request successfully sent to ${this.baseUrl}`);
 
-		// All good, let's parse the response
+		// All good, let"s parse the response
 		const finalResult = await this.parseResult<ExampleObj>(json, ExampleObjSchema);
 
 		console.groupEnd();
