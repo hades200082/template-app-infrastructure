@@ -1,12 +1,39 @@
-import {removeTrailingSlash} from "@/utils/urlHelper";
-import {z, ZodSchema} from 'zod'
-import {ExampleObj} from '@/services/exampleApi'
+import { cleanUrl } from "@/utils/urlHelper";
+import { getServerSession } from "next-auth";
+import { z, ZodSchema } from "zod"
+import { authOptions } from "./auth";
+import { getSession, signIn } from "next-auth/react";
+import { ENV } from "@/lib/envSchema";
 
-export const API_BASE_URL = removeTrailingSlash(process.env.API_BASE_URL!);
+export const API_BASE_URL = cleanUrl(ENV.API_BASE_URL);
 
 interface ApiAbstractions {
 	baseUrl:string;
 	parseResult: <TResult>(obj:any, schema:ZodSchema) => Promise<TResult|ApiError>
+}
+
+export class CoreApi {
+	constructor(){}
+
+	async getToken() {
+		if(typeof window === "undefined") {
+			const session = await getServerSession(authOptions);
+
+			if (session === null || session?.error === "RefreshAccessTokenError") {
+				signIn("auth0");
+			}
+
+			return session!.accessToken
+		}
+
+		const session = await getSession();
+
+		if(session === null || session?.error === "RefreshAccessTokenError") {
+			signIn("auth0")
+		}
+
+		return session!.accessToken;
+	}
 }
 
 export interface FindApi<TFindResult> extends ApiAbstractions {

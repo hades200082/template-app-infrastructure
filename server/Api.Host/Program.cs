@@ -56,6 +56,17 @@ builder.Services.AddStorage(builder.Configuration, builder.Environment);
 builder.Services.AddMediator();
 builder.Services.AddValidation();
 builder.Services.AddIdentity(builder.Configuration);
+builder.Services.AddCors((options) =>
+{
+    options.AddDefaultPolicy(b =>
+    {
+        var domains = builder.Configuration.GetSection("CorsDomains").Get<string[]>() ?? Array.Empty<string>();
+
+        b.WithOrigins(domains)
+            .WithMethods("DELETE", "GET", "PATCH", "POST", "PUT")
+            .AllowAnyHeader();
+    });
+});
 
 // Add all seeds in all loaded assemblies
 builder.Services.AddDataSeeds();
@@ -83,5 +94,6 @@ app.MapHealthChecksUI(options =>
     options.UseRelativeApiPath = false;
     options.UseRelativeResourcesPath = false;
 });
+app.UseCors();
 
 await app.RunAsync().ConfigureAwait(true);

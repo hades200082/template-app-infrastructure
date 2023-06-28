@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Api.Host.Mappers;
 using Api.Host.Models.v1.Example;
 using Api.Host.Models.v1.Example.Requests;
@@ -6,6 +6,7 @@ using Application.CQRS.Commands;
 using Application.CQRS.Queries;
 using FluentValidation;
 using Mediator;
+using Microsoft.AspNetCore.Authorization;
 using Shared.Core;
 
 namespace Api.Host.Controllers.v1;
@@ -38,6 +39,7 @@ public class ExampleController : ControllerBase
     /// <response code="200">Found</response>
     /// <response code="400">Validation failed</response>
     /// <response code="404">Object not found</response>
+    [Authorize]
     [HttpGet("{id}", Name = "Find")]
     [ProducesResponseType(typeof(ExampleEntityResponseModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]

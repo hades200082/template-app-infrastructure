@@ -44,7 +44,7 @@ internal sealed class CosmosProvider : ICosmosProvider
         if (_leaseContainer is null)
         {
             var db = (await _client.CreateDatabaseIfNotExistsAsync(_options.DatabaseId, cancellationToken: cancellationToken).ConfigureAwait(false)).Database;
-            _leaseContainer = (await db.CreateContainerIfNotExistsAsync("leases", "/PartitionId", cancellationToken: cancellationToken).ConfigureAwait(false)).Container;
+            _leaseContainer = (await db.CreateContainerIfNotExistsAsync("leases", "/partitionKey", cancellationToken: cancellationToken).ConfigureAwait(false)).Container;
         }
 
         return _leaseContainer;
