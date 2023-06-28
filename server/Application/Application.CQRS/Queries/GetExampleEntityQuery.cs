@@ -46,6 +46,6 @@ public sealed class
         var entity = await _repository.FindAsync(query.Id, nameof(ExampleEntity), cancellationToken);
         if (entity is null) return new NotFound();
 
-        return new ExampleEntityMapper().EntityToDto(entity);
+        return entity.ToDto();
     }
 }
