@@ -26,7 +26,7 @@ export const authOptions:NextAuthOptions = {
 		async session({ session, token }) {
 			session.user.identityId = token.id as string;
 			session.accessToken = token.accessToken as string;
-			session.error = token.error as string;
+			session.error = token.error as "RefreshAccessTokenError";
 
 			// TODO: fetch current user profile from api to populate session
 
