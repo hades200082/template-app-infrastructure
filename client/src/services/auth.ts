@@ -12,4 +12,4 @@ export const authOptions:NextAuthOptions = {
 			issuer: process.env.AUTH_ISSUER!
 		})
 	]
-}
+};

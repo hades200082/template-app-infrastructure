@@ -1,6 +1,5 @@
 import {removeTrailingSlash} from "@/utils/urlHelper";
-import {z, ZodSchema} from 'zod'
-import {ExampleObj} from '@/services/exampleApi'
+import {z, ZodSchema} from "zod";
 
 export const API_BASE_URL = removeTrailingSlash(process.env.API_BASE_URL!);
 

@@ -6,8 +6,8 @@ import {
 	ApiError,
 	ApiValidationError,
 	ApiValidationErrorSchema
-} from '@/services/api-abstractions'
-import {z, ZodSchema} from 'zod'
+} from "@/services/api-abstractions";
+import {z, ZodSchema} from "zod";
 
 export class ExampleApi	implements
 	FindApi<ExampleObj>,
@@ -16,7 +16,7 @@ export class ExampleApi	implements
 	baseUrl: string;
 
 	constructor() {
-		this.baseUrl = `${API_BASE_URL}/v1/example`
+		this.baseUrl = `${API_BASE_URL}/v1/example`;
 	}
 
 	async findAsync(id: string): Promise<ExampleObj|ApiError|null> {
@@ -27,7 +27,7 @@ export class ExampleApi	implements
 		if(response.status !== 200){ // not an "Ok" response
 			if(response.status === 404) {
 				console.info(`${id} not found`);
-				return null // null when not found
+				return null; // null when not found
 			}
 
 			// Otherwise return the ApiError - the consumer must deal with this.
@@ -49,16 +49,16 @@ export class ExampleApi	implements
 		const response = await fetch(this.baseUrl, {
 			method: "POST",
 			body: JSON.stringify(model)
-		})
+		});
 
 		const json = await response.json();
 
 		if(response.status !== 201){ // created
 			if(response.status === 400) {
 				// Bad Request is typically used for validation errors
-				const validationError = await ApiValidationErrorSchema.parseAsync(json)
-				console.warn(validationError)
-				return validationError
+				const validationError = await ApiValidationErrorSchema.parseAsync(json);
+				console.warn(validationError);
+				return validationError;
 			}
 			else {
 				const error = await ApiErrorSchema.parseAsync(json);
@@ -72,7 +72,7 @@ export class ExampleApi	implements
 		// All good, let's parse the response
 		const finalResult = await this.parseResult<ExampleObj>(json, ExampleObjSchema);
 
-		console.groupEnd()
+		console.groupEnd();
 
 		return finalResult;
 	}
@@ -83,11 +83,11 @@ export class ExampleApi	implements
 		if(!parseResult.success) {
 			console.error("The value returned by the server does not match the ExampleObjSchema", parseResult, obj);
 			return await ApiErrorSchema.parseAsync({
-				type: 'ResponseValidationError',
-				title: 'The server returned an unexpected schema but the item may have been created.',
+				type: "ResponseValidationError",
+				title: "The server returned an unexpected schema but the item may have been created.",
 				detail: parseResult.error,
 				instance: JSON.stringify(obj)
-			})
+			});
 		}
 
 		return parseResult.data;
