@@ -31,15 +31,15 @@ public interface IRepository<TEntity>
 
 
     // Count
-    Task<int> CountAsync(Expression<Func<TEntity, bool>>? expression, CancellationToken cancellationToken = default);
+    Task<int> CountAsync(Expression<Func<TEntity, bool>>? whereExpression, CancellationToken cancellationToken = default);
     Task<int> CountAsync(string partitionKeyValue, CancellationToken cancellationToken = default);
-    Task<int> CountAsync(Expression<Func<TEntity, bool>>? expression, string partitionKeyValue, CancellationToken cancellationToken = default);
+    Task<int> CountAsync(Expression<Func<TEntity, bool>>? whereExpression, string partitionKeyValue, CancellationToken cancellationToken = default);
 
     // Exists
     Task<bool> ExistsAsync(string id, string partitionKeyValue, CancellationToken cancellationToken = default);
     Task<bool> ExistsAsync(string id, CancellationToken cancellationToken = default);
-    Task<bool> ExistsAsync(Expression<Func<TEntity, bool>>? expression, string partitionKeyValue, CancellationToken cancellationToken = default);
-    Task<bool> ExistsAsync(Expression<Func<TEntity, bool>>? expression, CancellationToken cancellationToken = default);
+    Task<bool> ExistsAsync(Expression<Func<TEntity, bool>>? whereExpression, string partitionKeyValue, CancellationToken cancellationToken = default);
+    Task<bool> ExistsAsync(Expression<Func<TEntity, bool>>? whereExpression, CancellationToken cancellationToken = default);
 
     // Create
     Task<TEntity?> CreateAsync(TEntity entity,CancellationToken cancellationToken = default);

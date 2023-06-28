@@ -37,6 +37,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Domain\Domain.Abstractions\Domain.Abstractions.csproj" />
+      <ProjectReference Include="..\..\Domain\Domain.DataSeedAbstractions\Domain.DataSeedAbstractions.csproj" />
       <ProjectReference Include="..\..\Shared\Shared.Core\Shared.Core.csproj" />
     </ItemGroup>
 

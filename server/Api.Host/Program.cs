@@ -1,4 +1,5 @@
 using Api.Host;
+using Domain.DataSeeds; // I don't like accessing the domain here but seed data belongs to the domain.
 using HealthChecks.UI.Client;
 using Infrastructure.AMQP;
 using Infrastructure.Cosmos;
@@ -8,7 +9,6 @@ using Infrastructure.Storage;
 using Infrastructure.Validation;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseLogging();
@@ -57,7 +57,13 @@ builder.Services.AddMediator();
 builder.Services.AddValidation();
 builder.Services.AddIdentity(builder.Configuration);
 
+// Add all seeds in all loaded assemblies
+builder.Services.AddDataSeeds();
+
 var app = builder.Build();
+
+// Execute all seeds before registering middleware
+await app.ExecuteDataSeedingAsync(app.Lifetime.ApplicationStopping).ConfigureAwait(false);
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
@@ -78,4 +84,4 @@ app.MapHealthChecksUI(options =>
     options.UseRelativeResourcesPath = false;
 });
 
-app.Run();
+await app.RunAsync().ConfigureAwait(true);
