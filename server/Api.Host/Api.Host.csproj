@@ -44,6 +44,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.CQRS\Application.CQRS.csproj" />
     <ProjectReference Include="..\Application\Application.DtoModels\Application.DtoModels.csproj" />
+    <ProjectReference Include="..\Domain\Domain.DataSeeds\Domain.DataSeeds.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.AMQP\Infrastructure.AMQP.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.Cosmos\Infrastructure.Cosmos.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.Identity\Infrastructure.Identity.csproj" />

@@ -1,4 +1,5 @@
-﻿using Api.Host;
+using Api.Host;
+using Domain.DataSeeds; // I don't like accessing the domain here but seed data belongs to the domain.
 using HealthChecks.UI.Client;
 using Infrastructure.AMQP;
 using Infrastructure.Cosmos;
@@ -20,8 +21,9 @@ builder.Services.AddHealthChecks()
 builder.Services.AddHealthChecksUI(opt => {
         opt.SetEvaluationTimeInSeconds(30);
         opt.MaximumHistoryEntriesPerEndpoint(60);
+        opt.SetMinimumSecondsBetweenFailureNotifications(60 * 60 * 2);
+        opt.SetHeaderText("My Awesome Healthchecks");
         opt.AddHealthCheckEndpoint("app", "/_health");
-        // opt.AddHealthCheckEndpoint(name: "app", uri: "~/_health");
     })
     .AddInMemoryStorage();
 
@@ -66,7 +68,13 @@ builder.Services.AddCors((options) =>
     });
 });
 
+// Add all seeds in all loaded assemblies
+builder.Services.AddDataSeeds();
+
 var app = builder.Build();
+
+// Execute all seeds before registering middleware
+await app.ExecuteDataSeedingAsync(app.Lifetime.ApplicationStopping).ConfigureAwait(false);
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
@@ -74,12 +82,12 @@ app.UseReDoc();
 app.UseHttpsRedirection();
 app.UseIdentity();
 app.MapControllers();
-app.UseHealthChecks("/_health", new HealthCheckOptions
+app.MapHealthChecks("/_health", new HealthCheckOptions
 {
     Predicate = _ => true,
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
 });
-app.UseHealthChecksUI(options =>
+app.MapHealthChecksUI(options =>
 {
     options.UIPath = "/healthchecks-ui";
     options.ApiPath = "/healthchecks-api";
@@ -88,4 +96,4 @@ app.UseHealthChecksUI(options =>
 });
 app.UseCors();
 
-app.Run();
+await app.RunAsync().ConfigureAwait(true);
