@@ -1,9 +1,9 @@
-import { cleanUrl } from "@/utils/urlHelper";
-import { getServerSession } from "next-auth";
-import { z, ZodSchema } from "zod"
 import { authOptions } from "./auth";
-import { getSession, signIn } from "next-auth/react";
+import { cleanUrl } from "@/utils/urlHelper";
 import { ENV } from "@/lib/envSchema";
+import { getSession, signIn } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { z, ZodSchema } from "zod";
 
 export const API_BASE_URL = cleanUrl(ENV.API_BASE_URL);
 
@@ -13,8 +13,6 @@ interface ApiAbstractions {
 }
 
 export class CoreApi {
-	constructor(){}
-
 	async getToken() {
 		if(typeof window === "undefined") {
 			const session = await getServerSession(authOptions);
@@ -23,13 +21,13 @@ export class CoreApi {
 				signIn("auth0");
 			}
 
-			return session!.accessToken
+			return session!.accessToken;
 		}
 
 		const session = await getSession();
 
 		if(session === null || session?.error === "RefreshAccessTokenError") {
-			signIn("auth0")
+			signIn("auth0");
 		}
 
 		return session!.accessToken;

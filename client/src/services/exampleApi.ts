@@ -1,17 +1,18 @@
 import {
 	API_BASE_URL,
-	ApiErrorSchema,
-	FindApi,
-	PostApi,
 	ApiError,
+	ApiErrorSchema,
 	ApiValidationError,
 	ApiValidationErrorSchema,
-} from "@/services/api-abstractions"
-import { z, ZodSchema } from "zod"
+	CoreApi,
+	FindApi,
+	PostApi,
+} from "@/services/api-abstractions";
+import { z, ZodSchema } from "zod";
 
 export class ExampleApi
-extends CoreApi
-implements
+	extends CoreApi
+	implements
 	FindApi<ExampleObj>,
 	PostApi<CreateExampleObj, ExampleObj>
 {

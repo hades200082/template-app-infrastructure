@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
 import { ENV } from "@/lib/envSchema";
+import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET() {
 	const returnTo = encodeURI(`${ENV.NEXTAUTH_URL}/login`);
 
 	return NextResponse.redirect(

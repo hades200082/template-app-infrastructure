@@ -63,7 +63,8 @@
 		[
 			"warn", 
 			{
-				"ignoreCase": true
+				"ignoreCase": true,
+				"memberSyntaxSortOrder": ["none", "all", "single", "multiple"]
 			}
 		],
 		"tailwindcss/no-custom-classname": "off"

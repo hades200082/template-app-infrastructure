@@ -1,3 +1,4 @@
+/* eslint-disable no-process-env */
 import { z } from "zod";
 
 const envSchema = z.object({
@@ -12,15 +13,17 @@ const envSchema = z.object({
 	NEXTAUTH_URL: z.string().trim().url().optional(),
 	NEXTAUTH_SECRET: z.string(),
 	NODE_TLS_REJECT_UNAUTHORIZED: z.coerce.number().min(0).max(1).optional()
-}).refine(schema => 
-	schema.AUTH_TOKEN_UPDATE_AT_SECONDS <= schema.AUTH_TOKEN_EXPIRATION_SECONDS, {
+}).refine(
+	schema => 
+		schema.AUTH_TOKEN_UPDATE_AT_SECONDS <= schema.AUTH_TOKEN_EXPIRATION_SECONDS, 
+	{
 		message: "AUTH_TOKEN_EXPIRATION_SECONDS must be greater than AUTH_TOKEN_UPDATE_AT_SECONDS",
 	}
-)
+);
 
 export const ENV = envSchema.parse(process.env);
 
 export const getEnvIssues = (): z.ZodIssue[] | void => {
-  const result = envSchema.safeParse(process.env);
-  if (!result.success) return result.error.issues;
+	const result = envSchema.safeParse(process.env);
+	if (!result.success) return result.error.issues;
 };
