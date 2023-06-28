@@ -14,12 +14,6 @@ public class CosmosSeedRunner : IDataSeedRunner
         _dataSeeds = dataSeeds;
     }
 
-    // protected CosmosSeedRunner(IHostEnvironment environment, IDataSeed dataSeeds)
-    // {
-    //     _environment = environment;
-    //     _dataSeeds = new []{dataSeeds};
-    // }
-
     public async Task ExecuteSeedsAsync(CancellationToken cancellationToken)
     {
         var seedPriorityGroups = _dataSeeds
