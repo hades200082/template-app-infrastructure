@@ -2,7 +2,8 @@ import { cleanUrl } from "@/utils/urlHelper";
 import { getServerSession } from "next-auth";
 import { z, ZodSchema } from "zod"
 import { authOptions } from "./auth";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 export const API_BASE_URL = cleanUrl(process.env.API_BASE_URL!);
 
@@ -17,10 +18,20 @@ export class CoreApi {
 	async getToken() {
 		if(typeof window === "undefined") {
 			const session = await getServerSession(authOptions);
+
+			if (session === null) {
+				redirect(`${process.env.NEXTAUTH_URL}/login`);
+			}
+
 			return session!.accessToken
 		}
 
 		const session = await getSession();
+
+		if(session === null) {
+			window.location.href = `${window.location.hostname}/login`;
+		}
+
 		return session!.accessToken;
 	}
 }
