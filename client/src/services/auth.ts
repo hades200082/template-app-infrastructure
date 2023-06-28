@@ -1,4 +1,4 @@
-import { NextAuthOptions, TokenSet } from "next-auth";
+import { type NextAuthOptions, type TokenSet } from "next-auth";
 import Auth0 from "next-auth/providers/auth0";
 
 export const authOptions:NextAuthOptions = {
