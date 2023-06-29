@@ -8,8 +8,6 @@ import { ENV } from "@/lib/envSchema";
 export const API_BASE_URL = cleanUrl(ENV.API_BASE_URL);
 
 interface ApiAbstractions {
-	baseUrl:string;
-
 	/**
 	 * Parses the given object using the given ZodSchema and returns the typed object or an ApiError
 	 *
