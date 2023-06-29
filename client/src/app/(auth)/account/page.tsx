@@ -1,8 +1,8 @@
 import LogoutButton from "./LogoutButton";
-import exampleApi from "@/services/exampleApi";
+import { findAsync } from "@/services/exampleApi"
 
 export default async function Account() {
-	const response = await exampleApi.findAsync("test");
+	const response = await findAsync("test");
 
 	return (
 		<>
