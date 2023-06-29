@@ -11,6 +11,7 @@ const envSchema = z.object({
 	AUTH_TOKEN_UPDATE_AT_SECONDS: z.coerce.number(),
 	NEXTAUTH_URL: z.string().trim().url().optional(),
 	NEXTAUTH_SECRET: z.string(),
+	GTM_CONTAINER_ID: z.string().regex(/^GTM-[A-Z0-9]{1,10}$/).optional(),
 	NODE_TLS_REJECT_UNAUTHORIZED: z.coerce.number().min(0).max(1).optional()
 }).refine(schema => 
 	schema.AUTH_TOKEN_UPDATE_AT_SECONDS <= schema.AUTH_TOKEN_EXPIRATION_SECONDS, {
