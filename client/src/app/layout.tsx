@@ -1,6 +1,8 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
-import {NextAuthProvider} from "@/app/providers";
+import { NextAuthProvider } from "@/app/providers";
+import { ENV } from '@/lib/envSchema';
+import GoogleTagManager from '@/components/GoogleTagManager';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,7 +19,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-       <NextAuthProvider>{children}</NextAuthProvider>
+        {ENV.GTM_CONTAINER_ID && <GoogleTagManager Id={ENV.GTM_CONTAINER_ID} />}
+        <NextAuthProvider>{children}</NextAuthProvider>
       </body>
     </html>
   )
