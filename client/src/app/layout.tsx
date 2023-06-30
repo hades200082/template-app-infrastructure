@@ -1,6 +1,7 @@
-import "./globals.css";
-import { Inter } from "next/font/google";
-import {NextAuthProvider} from "@/app/providers";
+import './globals.css'
+import { Inter } from 'next/font/google'
+import { Providers } from "@/app/providers";
+import ThemeSwitcher from './ThemeSwitcher';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,11 +15,14 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-	return (
-		<html lang="en">
-			<body className={inter.className}>
-				<NextAuthProvider>{children}</NextAuthProvider>
-			</body>
-		</html>
-	);
+  return (
+    <html lang="en">
+      <body className={`${inter.className} bg-white text-black dark:bg-black dark:text-white`}>
+        <Providers>
+          <ThemeSwitcher />
+          {children}
+        </Providers>
+      </body>
+    </html>
+  )
 }
