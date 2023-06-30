@@ -5,4 +5,4 @@ export const config = {
 		"/account",
 		"/account/:path*"
 	]
-}
+};

@@ -1,9 +1,6 @@
 import LogoutButton from "./LogoutButton";
-import exampleApi from "@/services/exampleApi";
 
 export default async function Account() {
-	const response = await exampleApi.findAsync("test");
-
 	return (
 		<>
 			<h1>Account</h1>
@@ -12,5 +9,5 @@ export default async function Account() {
 			</p>
 			<LogoutButton />
 		</>
-	)
+	);
 }

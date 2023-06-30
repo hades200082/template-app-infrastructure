@@ -1,6 +1,6 @@
-import { type NextAuthOptions, type TokenSet } from "next-auth";
 import Auth0 from "next-auth/providers/auth0";
 import { ENV } from "@/lib/envSchema";
+import { type NextAuthOptions, type TokenSet } from "next-auth";
 
 export const authOptions:NextAuthOptions = {
 	session: {
@@ -39,7 +39,7 @@ export const authOptions:NextAuthOptions = {
 					accessToken: account.access_token,
 					expires_at: Math.floor(Date.now() / 1000 + (account.expires_at as number)),
 					refresh_token: account.refresh_token
-				}
+				};
 			}
 			else if (Date.now() < ((token.exp as number) * 1000)) {
 				return token;
@@ -67,14 +67,14 @@ export const authOptions:NextAuthOptions = {
 						// Fall back to old refresh token, but note that
 						// many providers may only allow using a refresh token once.
 						refresh_token: tokens.refresh_token ?? token.refresh_token,
-					}
+					};
 				}
 				catch (error) {
-          console.error("Error refreshing access token", error)
-          // The error property will be used client-side to handle the refresh token error
-          return { ...token, error: "RefreshAccessTokenError" as const }
-        }				
+					console.error("Error refreshing access token", error);
+					// The error property will be used client-side to handle the refresh token error
+					return { ...token, error: "RefreshAccessTokenError" as const };
+				}				
 			}
 		}
 	}
-}
+};

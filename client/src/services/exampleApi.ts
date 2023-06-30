@@ -1,14 +1,14 @@
 import {
 	API_BASE_URL,
-	ApiErrorSchema,
-	FindApi,
-	PostApi,
 	ApiError,
+	ApiErrorSchema,
 	ApiValidationError,
 	ApiValidationErrorSchema,
-	CoreApi
-} from "@/services/api-abstractions"
-import { z, ZodSchema } from "zod"
+	CoreApi,
+	FindApi,
+	PostApi,
+} from "@/services/api-abstractions";
+import { z, ZodSchema } from "zod";
 
 //#region Define Zod schemas and TypeScript types for this service
 const ExampleObjSchema = z.object({
@@ -80,7 +80,7 @@ implements
 		if(response.status !== 200){ // not an "Ok" response
 			if(response.status === 404) {
 				console.info(`${id} not found`);
-				return null // null when not found
+				return null; // null when not found
 			}
 
 			// Otherwise return the ApiError - the consumer must deal with this.
@@ -106,16 +106,16 @@ implements
 			},
 			method: "POST",
 			body: JSON.stringify(model)
-		})
+		});
 
 		const json = await response.json();
 
 		if(response.status !== 201){ // created
 			if(response.status === 400) {
 				// Bad Request is typically used for validation errors
-				const validationError = await ApiValidationErrorSchema.parseAsync(json)
-				console.warn(validationError)
-				return validationError
+				const validationError = await ApiValidationErrorSchema.parseAsync(json);
+				console.warn(validationError);
+				return validationError;
 			}
 			else {
 				const error = await ApiErrorSchema.parseAsync(json);
@@ -129,7 +129,7 @@ implements
 		// All good, let"s parse the response
 		const finalResult = await this.parseResult<ExampleObj>(json, ExampleObjSchema);
 
-		console.groupEnd()
+		console.groupEnd();
 
 		return finalResult;
 	}
@@ -146,7 +146,7 @@ implements
 				title: "The server returned an unexpected schema but the item may have been created.",
 				detail: parseResult.error,
 				instance: JSON.stringify(obj)
-			})
+			});
 		}
 
 		return parseResult.data;

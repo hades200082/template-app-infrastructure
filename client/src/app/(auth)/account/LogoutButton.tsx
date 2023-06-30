@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { signOut } from "next-auth/react";
 import { ENV } from "@/lib/envSchema";
+import { signOut } from "next-auth/react";
 
 export default function LogoutButton() {
 	return (
@@ -13,4 +13,4 @@ export default function LogoutButton() {
 				Log out
 			</button>
 		</>
-	)}
+	);}
