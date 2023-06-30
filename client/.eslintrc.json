@@ -1,6 +1,75 @@
 {
-  "extends": [
-    "next/core-web-vitals",
-    "plugin:storybook/recommended"
-  ]
+	"parser": "@typescript-eslint/parser",
+    "extends": [
+		"next/core-web-vitals",
+		"plugin:tailwindcss/recommended",
+		"plugin:@typescript-eslint/recommended",
+        "plugin:storybook/recmmended"
+	],
+	"plugins": [
+		"tailwindcss",
+		"@typescript-eslint",
+        "eslint-plugin-tsdoc"
+	],
+	"settings": {
+		"tailwindcss": {
+			"calees": [
+				"cn",
+				"clsx",
+				"twMerge"
+			]
+		}
+	},
+	"rules": {
+		"@typescript-eslint/no-unused-vars": ["error"],
+		"@typescript-eslint/no-non-null-assertion": "off",
+		"arrow-spacing": [
+			"error", 
+			{ 
+				"before": true,
+				"after": true
+			}
+		],
+		"eol-last": ["error", "always"],
+		"eqeqeq": "error",
+		"indent": [
+			"error",
+			"tab",
+			{ "SwitchCase": 1 }
+		],
+		"max-depth": "error",
+		"no-multiple-empty-lines": [
+			"error", 
+			{ 
+				"max": 2,
+				"maxEOF": 1
+			}
+		],
+		"no-process-env": ["error"],
+		"no-tabs": "off",
+		"no-var": "error",
+		"no-unused-vars": "off",
+		"quotes": [
+			"error",
+			"double",
+			{
+				"avoidEscape": true,
+				"allowTemplateLiterals": true
+			}
+		],
+		"semi": [
+			"error",
+			"always"
+		],
+		"sort-imports": 
+		[
+			"warn", 
+			{
+				"ignoreCase": true,
+				"memberSyntaxSortOrder": ["none", "all", "single", "multiple"]
+			}
+		],
+		"tailwindcss/no-custom-classname": "off",
+        "tsdoc/syntax": "warn"
+	}
 }
