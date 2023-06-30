@@ -41,6 +41,7 @@ export async function getToken() {
  * @returns
  * The parsed object is valid, otherwise an {@link ApiError}
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function parseResult<TResult>(obj: any, schema: ZodSchema): Promise<ApiError | TResult> {
 	const parseResult = await schema.safeParseAsync(obj);
 
