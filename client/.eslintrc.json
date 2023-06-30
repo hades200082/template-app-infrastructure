@@ -1,13 +1,14 @@
 {
 	"parser": "@typescript-eslint/parser",
-  "extends": [
+    "extends": [
 		"next/core-web-vitals",
 		"plugin:tailwindcss/recommended",
 		"plugin:@typescript-eslint/recommended"
 	],
 	"plugins": [
 		"tailwindcss",
-		"@typescript-eslint"
+		"@typescript-eslint",
+        "eslint-plugin-tsdoc"
 	],
 	"settings": {
 		"tailwindcss": {
@@ -67,6 +68,7 @@
 				"memberSyntaxSortOrder": ["none", "all", "single", "multiple"]
 			}
 		],
-		"tailwindcss/no-custom-classname": "off"
+		"tailwindcss/no-custom-classname": "off",
+        "tsdoc/syntax": "warn"
 	}
 }
