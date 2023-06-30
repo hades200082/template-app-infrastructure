@@ -1,17 +1,15 @@
 import {
 	API_BASE_URL,
-	ApiErrorSchema,
-	FindApi,
-	PostApi,
 	ApiError,
+	ApiErrorSchema,
 	ApiValidationError,
 	ApiValidationErrorSchema,
 	getToken, parseResult
-} from "@/services/api-abstractions"
-import { z } from "zod"
+} from "@/services/api-abstractions";
+import { z } from "zod";
 
 // Define the base URL for the resource this file deals with
-const baseUrl: string = `${API_BASE_URL}v1/example`;
+const baseUrl = `${API_BASE_URL}v1/example`;
 
 //#region ZodSchema and type definitions
 const ExampleObjSchema = z.object({
@@ -51,7 +49,7 @@ export const findAsync : FindApi =
 		if(response.status !== 200){ // not an "Ok" response
 			if(response.status === 404) {
 				console.info(`${id} not found`);
-				return null // null when not found
+				return null; // null when not found
 			}
 
 			// Otherwise return the ApiError - the consumer must deal with this.
@@ -64,7 +62,7 @@ export const findAsync : FindApi =
 
 		// All good, let"s parse the response
 		return await parseResult<ExampleObj>(json, ExampleObjSchema);
-	}
+	};
 
 /**
  * Creates a new item via the API
@@ -86,16 +84,16 @@ export const postAsync  : PostApi =
 			},
 			method: "POST",
 			body: JSON.stringify(model)
-		})
+		});
 
 		const json = await response.json();
 
 		if(response.status !== 201){ // created
 			if(response.status === 400) {
 				// Bad Request is typically used for validation errors
-				const validationError = await ApiValidationErrorSchema.parseAsync(json)
-				console.warn(validationError)
-				return validationError
+				const validationError = await ApiValidationErrorSchema.parseAsync(json);
+				console.warn(validationError);
+				return validationError;
 			}
 			else {
 				const error = await ApiErrorSchema.parseAsync(json);
@@ -109,7 +107,7 @@ export const postAsync  : PostApi =
 		// All good, let"s parse the response
 		const finalResult = await parseResult<ExampleObj>(json, ExampleObjSchema);
 
-		console.groupEnd()
+		console.groupEnd();
 
 		return finalResult;
-	}
+	};

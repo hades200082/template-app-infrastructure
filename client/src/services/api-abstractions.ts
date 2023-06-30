@@ -1,11 +1,11 @@
-import {cleanUrl} from '@/utils/urlHelper'
-import {getServerSession} from 'next-auth'
-import {z, ZodSchema} from 'zod'
-import {authOptions} from './auth'
-import {getSession, signIn} from 'next-auth/react'
-import {ENV} from '@/lib/envSchema'
+import { authOptions } from "./auth";
+import { cleanUrl } from "@/utils/urlHelper";
+import { ENV } from "@/lib/envSchema";
+import { getServerSession } from "next-auth";
+import { getSession, signIn } from "next-auth/react";
+import { z, ZodSchema } from "zod";
 
-export const API_BASE_URL = cleanUrl(ENV.API_BASE_URL)
+export const API_BASE_URL = cleanUrl(ENV.API_BASE_URL);
 
 //#region utilities
 /**
@@ -14,23 +14,23 @@ export const API_BASE_URL = cleanUrl(ENV.API_BASE_URL)
  * @returns A JWT for the current user
  */
 export async function getToken() {
-    if (typeof window === 'undefined') {
-        const session = await getServerSession(authOptions)
+	if (typeof window === "undefined") {
+		const session = await getServerSession(authOptions);
 
-        if (session === null || session?.error === 'RefreshAccessTokenError') {
-            signIn('auth0')
-        }
+		if (session === null || session?.error === "RefreshAccessTokenError") {
+			signIn("auth0");
+		}
 
-        return session!.accessToken
-    }
+		return session!.accessToken;
+	}
 
-    const session = await getSession()
+	const session = await getSession();
 
-    if (session === null || session?.error === 'RefreshAccessTokenError') {
-        signIn('auth0')
-    }
+	if (session === null || session?.error === "RefreshAccessTokenError") {
+		signIn("auth0");
+	}
 
-    return session!.accessToken
+	return session!.accessToken;
 }
 
 /**
@@ -42,19 +42,19 @@ export async function getToken() {
  * The parsed object is valid, otherwise an {@link ApiError}
  */
 export async function parseResult<TResult>(obj: any, schema: ZodSchema): Promise<ApiError | TResult> {
-    const parseResult = await schema.safeParseAsync(obj)
+	const parseResult = await schema.safeParseAsync(obj);
 
-    if (!parseResult.success) {
-        console.error('The value returned by the server does not match the given type schema.', parseResult, obj)
-        return await ApiErrorSchema.parseAsync({
-            type: 'ResponseValidationError',
-            title: 'The server returned an unexpected schema but the item may have been created.',
-            detail: parseResult.error,
-            instance: JSON.stringify(obj)
-        })
-    }
+	if (!parseResult.success) {
+		console.error("The value returned by the server does not match the given type schema.", parseResult, obj);
+		return await ApiErrorSchema.parseAsync({
+			type: "ResponseValidationError",
+			title: "The server returned an unexpected schema but the item may have been created.",
+			detail: parseResult.error,
+			instance: JSON.stringify(obj)
+		});
+	}
 
-    return parseResult.data
+	return parseResult.data;
 }
 //#endregion
 
@@ -69,12 +69,12 @@ export type DeleteApi = <TDeleteResult>(id: string) => Promise<TDeleteResult | A
 
 //#region General ZodSchema & type definitions
 export const ApiErrorSchema = z.object({
-    type: z.string().optional(),
-    title: z.string().optional(),
-    status: z.number().int().optional(),
-    detail: z.string().optional(),
-    instance: z.string().optional(),
-})
+	type: z.string().optional(),
+	title: z.string().optional(),
+	status: z.number().int().optional(),
+	detail: z.string().optional(),
+	instance: z.string().optional(),
+});
 
 /**
  * Defines the structure of a `ProblemDetails` object that may be returned by the API
@@ -82,8 +82,8 @@ export const ApiErrorSchema = z.object({
 export type ApiError = z.infer<typeof ApiErrorSchema>;
 
 export const ApiValidationErrorSchema = z.object({
-    errors: z.string().array().optional()
-}).extend(ApiErrorSchema.shape)
+	errors: z.string().array().optional()
+}).extend(ApiErrorSchema.shape);
 
 /**
  * Defines the structure of a `ValidationProblemDetails` object that may be returned by the API
@@ -91,13 +91,13 @@ export const ApiValidationErrorSchema = z.object({
 export type ApiValidationError = z.infer<typeof ApiValidationErrorSchema>;
 
 export const JsonPatchOperationSchema = z.object({
-    op: z.enum(['add', 'remove', 'replace', 'copy', 'move']),
-    path: z.string().startsWith('/'),
-    value: z.any()
-})
+	op: z.enum(["add", "remove", "replace", "copy", "move"]),
+	path: z.string().startsWith("/"),
+	value: z.any()
+});
 export type JsonPatchOperation = z.infer<typeof JsonPatchOperationSchema>;
 
 const JsonPatchSchema = JsonPatchOperationSchema.array()
-    .max(10) // JsonPatch in Cosmos only allows 10 patch operations. We may remove this and implement patch splitting in the API layer yet - not sure.
+	.max(10); // JsonPatch in Cosmos only allows 10 patch operations. We may remove this and implement patch splitting in the API layer yet - not sure.
 export type JsonPatch = z.infer<typeof JsonPatchSchema>;
 //#endregion
