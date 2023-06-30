@@ -3,7 +3,8 @@
 	"extends": [
 		"next/core-web-vitals",
 		"plugin:tailwindcss/recommended",
-		"plugin:@typescript-eslint/recommended"
+		"plugin:@typescript-eslint/recommended",
+        "plugin:storybook/recmmended"
 	],
 	"plugins": [
 		"tailwindcss",
