@@ -10,10 +10,10 @@ import {
 } from "@/services/api-abstractions"
 import { z } from "zod"
 
-// Define the base URL for this resource
+// Define the base URL for the resource this file deals with
 const baseUrl: string = `${API_BASE_URL}v1/example`;
 
-//#region Define Zod schemas and TypeScript types for this service
+//#region ZodSchema and type definitions
 const ExampleObjSchema = z.object({
 	id: z.string(),
 	name: z.string()
@@ -26,6 +26,14 @@ const CreateExampleObjSchema = z.object({
 export type CreateExampleObj = z.infer<typeof CreateExampleObjSchema>;
 //#endregion
 
+/**
+ * Finds a single item from the API by it's ID
+ *
+ * @param id - The ID of the item to be retrieved
+ * @returns
+ * A promise that will resolve to the item if it exists, null if the ID is not found
+ * or an {@link ApiError} if an error was thrown/returned by the API
+ */
 export const findAsync : FindApi =
 	async function <ExampleObj>(id: string):Promise<ExampleObj|ApiError|null> {
 		const response = await fetch(
@@ -58,6 +66,15 @@ export const findAsync : FindApi =
 		return await parseResult<ExampleObj>(json, ExampleObjSchema);
 	}
 
+/**
+ * Creates a new item via the API
+ *
+ * @param obj - The model that defines the creation of a new item
+ * @returns
+ * A promise that will resolve to the item if it was created, a {@link ApiValidationError} if
+ * the given `obj` argument or the returned data is invalid or an {@link ApiError} if an error
+ * was thrown/returned by the API
+ */
 export const postAsync  : PostApi =
 	async function <CreateExampleObj, ExampleObj>(obj: CreateExampleObj): Promise<ExampleObj|ApiValidationError|ApiError> {
 		console.group("postAsync");

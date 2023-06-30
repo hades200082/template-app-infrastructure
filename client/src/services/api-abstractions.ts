@@ -7,6 +7,12 @@ import {ENV} from '@/lib/envSchema'
 
 export const API_BASE_URL = cleanUrl(ENV.API_BASE_URL)
 
+//#region utilities
+/**
+ * Retrieves the current user's JWT from their logged-in next-auth session
+ *
+ * @returns A JWT for the current user
+ */
 export async function getToken() {
     if (typeof window === 'undefined') {
         const session = await getServerSession(authOptions)
@@ -27,6 +33,14 @@ export async function getToken() {
     return session!.accessToken
 }
 
+/**
+ * Parses & validates the given `obj` using the given `schema`
+ *
+ * @param obj - The object to be parsed/validated
+ * @param schema - The {@link ZodSchema} used to parse/validate the `obj`
+ * @returns
+ * The parsed object is valid, otherwise an {@link ApiError}
+ */
 export async function parseResult<TResult>(obj: any, schema: ZodSchema): Promise<ApiError | TResult> {
     const parseResult = await schema.safeParseAsync(obj)
 
@@ -42,25 +56,18 @@ export async function parseResult<TResult>(obj: any, schema: ZodSchema): Promise
 
     return parseResult.data
 }
+//#endregion
 
-interface ApiAbstractions {
-    /**
-     * Parses the given object using the given ZodSchema and returns the typed object or an ApiError
-     *
-     * @param obj - The object to be parsed
-     * @param schema - The ZodSchema to be used to validate the object
-     * @returns The typed object or an ApiError
-     */
-    parseResult: <TResult>(obj: any, schema: ZodSchema) => Promise<TResult | ApiError>
-}
-
+//#region endpoint method signature definitions
 export type FindApi = <TFindResult>(id: string) => Promise<TFindResult | ApiError | null>;
 export type GetApi = <TGetResult>(filter: string, orderBy: string, orderDirection: string) => Promise<TGetResult | ApiError>;
 export type PostApi = <TPostInput, TPostResult>(obj: TPostInput) => Promise<TPostResult | ApiValidationError | ApiError>;
 export type PutApi = <TPutInput, TPutResult>(obj: TPutInput) => Promise<TPutResult | ApiValidationError | ApiError>;
 export type PatchApi = <TPatchResult>(patch: JsonPatch) => Promise<TPatchResult | ApiValidationError | ApiError>;
 export type DeleteApi = <TDeleteResult>(id: string) => Promise<TDeleteResult | ApiValidationError | ApiError>;
+//#endregion
 
+//#region General ZodSchema & type definitions
 export const ApiErrorSchema = z.object({
     type: z.string().optional(),
     title: z.string().optional(),
@@ -68,11 +75,19 @@ export const ApiErrorSchema = z.object({
     detail: z.string().optional(),
     instance: z.string().optional(),
 })
+
+/**
+ * Defines the structure of a `ProblemDetails` object that may be returned by the API
+ */
 export type ApiError = z.infer<typeof ApiErrorSchema>;
 
 export const ApiValidationErrorSchema = z.object({
     errors: z.string().array().optional()
 }).extend(ApiErrorSchema.shape)
+
+/**
+ * Defines the structure of a `ValidationProblemDetails` object that may be returned by the API
+ */
 export type ApiValidationError = z.infer<typeof ApiValidationErrorSchema>;
 
 export const JsonPatchOperationSchema = z.object({
@@ -85,3 +100,4 @@ export type JsonPatchOperation = z.infer<typeof JsonPatchOperationSchema>;
 const JsonPatchSchema = JsonPatchOperationSchema.array()
     .max(10) // JsonPatch in Cosmos only allows 10 patch operations. We may remove this and implement patch splitting in the API layer yet - not sure.
 export type JsonPatch = z.infer<typeof JsonPatchSchema>;
+//#endregion
