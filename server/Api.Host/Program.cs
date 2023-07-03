@@ -4,6 +4,7 @@ using HealthChecks.UI.Client;
 using Infrastructure.AMQP;
 using Infrastructure.Cosmos;
 using Infrastructure.Identity;
+using Infrastructure.Identity.Auth0;
 using Infrastructure.Logging;
 using Infrastructure.Storage;
 using Infrastructure.Validation;
@@ -55,7 +56,9 @@ builder.Services.AddCosmos(builder.Configuration, builder.Environment);
 builder.Services.AddStorage(builder.Configuration, builder.Environment);
 builder.Services.AddMediator();
 builder.Services.AddValidation();
-builder.Services.AddIdentity(builder.Configuration);
+builder.Services.AddAuth0(builder.Configuration); // Adds Auth0 authentication with JWT
+// builder.Services.AddAuth0AuthenticationApiClient(builder.Configuration); // Adds the Auth0 AuthenticationApiClient
+// builder.Services.AddAuth0ManagementApiClient(builder.Configuration); // Adds the Auth0 ManagementApiClient (including taking care of getting/refreshing a token automatically)
 builder.Services.AddCors((options) =>
 {
     options.AddDefaultPolicy(b =>
@@ -80,7 +83,7 @@ await app.ExecuteDataSeedingAsync(app.Lifetime.ApplicationStopping).ConfigureAwa
 app.UseSwagger();
 app.UseReDoc();
 app.UseHttpsRedirection();
-app.UseIdentity();
+app.UseCustomAuthentication();
 app.MapControllers();
 app.MapHealthChecks("/_health", new HealthCheckOptions
 {

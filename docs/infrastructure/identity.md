@@ -1,39 +1,41 @@
 ﻿# Infrastructure.Identity
 
-This module adds Open ID Connect authentication capabilities to your application.
+This lays a foundation for implementing custom integrations with any Identity Provider in the future.
 
-This should work with any Identity Service that supports OpenID Connect (OIDC). (i.e. Auth0, AzureAD, etc.)
+## Usage & configuration
 
-## Usage & configuraton
+Configure the selected identity provider's Options in your appSettings. 
 
-Configure the module in the "Authentication" section of your appSettings:
-
-See https://auth0.com/blog/whats-new-in-dotnet-7-for-authentication-and-authorization/
+For Auth0, for example, there are two sets of options. One for authentication and one
+for the Management API. you only need include the section relevant to what you are using:
 
 ```json
 {
-  "Authentication": {
-    "Schemes": {
-      "Bearer": {
-        "Authority": "https://leec-distinction-dev.eu.auth0.com",
-        "ValidAudiences": ["https://leec-distinction.dev"],
-        "ValidIssuer": "leec-distinction-dev.eu.auth0.com"
-      }
-    }
+  "Auth0Options": {
+    "Domain": "leec-distinction-dev.eu.auth0.com",
+    "ValidAudiences": ["https://leec-distinction.dev"],
+    "NameClaimType": "name"
+  },
+  "Auth0ManagementApiOptions": {
+    "Domain": "leec-distinction-dev.eu.auth0.com",
+    "ClientId": "dkfjghadfkljghadflkjhgdfgkjh",
+    "ClientSecret": "sdflkjghalkjdfshgakjfhgadfgjh"
   }
 }
 ```
 
-In `Program.cs` add the Identity services to DI:
+In `Program.cs` add the chosen identity services to DI. Note that each is independent of the others.:
 
 ```csharp
-builder.Services.AddIdentity(builder.Configuration);
+builder.Services.AddAuth0(builder.Configuration); // Adds Auth0 authentication with JWT
+builder.Services.AddAuth0AuthenticationApiClient(builder.Configuration); // Adds the Auth0 AuthenticationApiClient
+builder.Services.AddAuth0ManagementApiClient(builder.Configuration); // Adds the Auth0 ManagementApiClient (including taking care of getting/refreshing a token automatically)
 ```
 
-Also add the identity middleware:
+Also add the identity middleware to the API host if required:
 
 ```csharp
-app.UseIdentity();
+app.UseCustomAuthentication();
 ```
 
 ## Extending
