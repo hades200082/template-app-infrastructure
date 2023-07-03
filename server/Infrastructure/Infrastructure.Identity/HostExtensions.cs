@@ -4,9 +4,10 @@ namespace Infrastructure.Identity;
 
 public static class HostExtensions
 {
-    public static void UseIdentity(this WebApplication app)
+    public static void UseCustomAuthentication(this WebApplication app)
     {
-        if(app.Configuration.GetSection("Identity").GetChildren().Count() == 1)
-            app.UseAuthorization(); // No longer need UseAuthentication()
+        app.UseAuthorization(); // No longer need UseAuthentication() in .Net 7+
+
+        // Configure any authorization policies here
     }
 }
