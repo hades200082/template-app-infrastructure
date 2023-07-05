@@ -1,16 +1,17 @@
+import { z } from "zod";
 import {
 	API_BASE_URL,
 	ApiError,
 	ApiErrorSchema,
 	ApiValidationError,
-	ApiValidationErrorSchema,
-	CoreApi,
-	FindApi,
-	PostApi,
+	ApiValidationErrorSchema, FindApi,
+	getToken, parseResult, PostApi
 } from "@/services/api-abstractions";
-import { z, ZodSchema } from "zod";
 
-//#region Define Zod schemas and TypeScript types for this service
+// Define the base URL for the resource this file deals with
+const baseUrl = `${API_BASE_URL}v1/example`;
+
+//#region ZodSchema and type definitions
 const ExampleObjSchema = z.object({
 	id: z.string(),
 	name: z.string()
@@ -24,51 +25,19 @@ export type CreateExampleObj = z.infer<typeof CreateExampleObjSchema>;
 //#endregion
 
 /**
- * This is an example class linked to the ExampleEntity resource on the API in this template.
+ * Finds a single item from the API by it's ID
  *
- * @remarks
- * While we could just export our ExampleApi class and let it be "newed up" where ever it is needed
- * this would mean that we may have multiple instances of the class lying around in memory throughout
- * the application.
- *
- * A more memory efficient way is to use a singleton.
- *
- * Technically we could `export default new ExampleApi()` and this would produce a singleton. However,
- * this would still leave the constructor as public, meaning that it could still be newed up separately.
- *
- * To enforce the singleton approach we must explicitly declare it as a singleton and make the constructor
- * private.
- *
- * @public
+ * @param id - The ID of the item to be retrieved
+ * @returns
+ * A promise that will resolve to the item if it exists, null if the ID is not found
+ * or an {@link ApiError} if an error was thrown/returned by the API
  */
-class ExampleApi
-extends CoreApi
-implements
-	FindApi<ExampleObj>,
-	PostApi<CreateExampleObj, ExampleObj>
-{
-	private readonly _baseUrl: string = `${API_BASE_URL}v1/example`;
-
-	// Explicitly define a singleton instance
-	private static _instance = new ExampleApi();
-
-	// Make our constructor private so nothing else can new it up
-	// enforcing our singleton state below
-	private constructor() {
-		super();
-	}
-
-	// give the instance a public accessor
-	static get instance() {
-		return this._instance;
-	}
-
-	/** {@inheritDoc FindApi.findAsync} */
-	async findAsync(id: string): Promise<ExampleObj|ApiError|null> {
+export const findAsync : FindApi =
+	async function <ExampleObj>(id: string):Promise<ExampleObj|ApiError|null> {
 		const response = await fetch(
-			`${this._baseUrl}/${id}`, {
+			`${baseUrl}/${id}`, {
 				headers: {
-					Authorization: `Bearer ${await this.getToken()}`
+					Authorization: `Bearer ${await getToken()}`
 				}
 			}
 		);
@@ -92,17 +61,26 @@ implements
 		}
 
 		// All good, let"s parse the response
-		return await this.parseResult<ExampleObj>(json, ExampleObjSchema);
-	}
+		return await parseResult<ExampleObj>(json, ExampleObjSchema);
+	};
 
-	/** {@inheritDoc FindApi.postAsync} */
-	async postAsync(obj: CreateExampleObj): Promise<ExampleObj|ApiValidationError|ApiError> {
+/**
+ * Creates a new item via the API
+ *
+ * @param obj - The model that defines the creation of a new item
+ * @returns
+ * A promise that will resolve to the item if it was created, a {@link ApiValidationError} if
+ * the given `obj` argument or the returned data is invalid or an {@link ApiError} if an error
+ * was thrown/returned by the API
+ */
+export const postAsync  : PostApi =
+	async function <CreateExampleObj, ExampleObj>(obj: CreateExampleObj): Promise<ExampleObj|ApiValidationError|ApiError> {
 		console.group("postAsync");
 		const model = await CreateExampleObjSchema.parseAsync(obj);
 
-		const response = await fetch(this._baseUrl, {
+		const response = await fetch(baseUrl, {
 			headers: {
-				Authorization: `Bearer ${await this.getToken()}`
+				Authorization: `Bearer ${await getToken()}`
 			},
 			method: "POST",
 			body: JSON.stringify(model)
@@ -124,33 +102,12 @@ implements
 			}
 		}
 
-		console.info(`POST request successfully sent to ${this._baseUrl}`);
+		console.info(`POST request successfully sent to ${baseUrl}`);
 
 		// All good, let"s parse the response
-		const finalResult = await this.parseResult<ExampleObj>(json, ExampleObjSchema);
+		const finalResult = await parseResult<ExampleObj>(json, ExampleObjSchema);
 
 		console.groupEnd();
 
 		return finalResult;
-	}
-
-
-	/** {@inheritDoc ApiAbstractions.parseResult} */
-	async parseResult<TResult>(obj: any, schema: ZodSchema): Promise<ApiError | TResult> {
-		const parseResult = await schema.safeParseAsync(obj);
-
-		if(!parseResult.success) {
-			console.error("The value returned by the server does not match the ExampleObjSchema", parseResult, obj);
-			return await ApiErrorSchema.parseAsync({
-				type: "ResponseValidationError",
-				title: "The server returned an unexpected schema but the item may have been created.",
-				detail: parseResult.error,
-				instance: JSON.stringify(obj)
-			});
-		}
-
-		return parseResult.data;
-	}
-
-}
-export default ExampleApi.instance;
+	};

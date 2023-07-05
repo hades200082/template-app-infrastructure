@@ -7,133 +7,68 @@ import { z, ZodSchema } from "zod";
 
 export const API_BASE_URL = cleanUrl(ENV.API_BASE_URL);
 
-interface ApiAbstractions {
-	/**
-	 * Parses the given object using the given ZodSchema and returns the typed object or an ApiError
-	 *
-	 * @param obj - The object to be parsed
-	 * @param schema - The ZodSchema to be used to validate the object
-	 * @returns The typed object or an ApiError
-	 */
-	parseResult: <TResult>(obj:any, schema:ZodSchema) => Promise<TResult|ApiError>
-}
+//#region utilities
+/**
+ * Retrieves the current user's JWT from their logged-in next-auth session
+ *
+ * @returns A JWT for the current user
+ */
+export async function getToken() {
+	if (typeof window === "undefined") {
+		const session = await getServerSession(authOptions);
 
-export class CoreApi {
-	async getToken() {
-		if(typeof window === "undefined") {
-			const session = await getServerSession(authOptions);
-
-			if (session === null || session?.error === "RefreshAccessTokenError") {
-				signIn("auth0");
-			}
-
-			return session!.accessToken;
-		}
-
-		const session = await getSession();
-
-		if(session === null || session?.error === "RefreshAccessTokenError") {
+		if (session === null || session?.error === "RefreshAccessTokenError") {
 			signIn("auth0");
 		}
 
 		return session!.accessToken;
 	}
-}
 
+	const session = await getSession();
 
-/**
- * An interface for simple GET resource/{id} operations
- * @public
- */
-export interface FindApi<TFindResult> extends ApiAbstractions {
-	/**
-	 * Retrieves the resource/record identified by the ID given.
-	 *
-	 * @param id - the ID of the item to retrieve
-	 * @returns The item requested if it exists, null if it doesn't or an API Error if anything goes wrong.
-	 */
-	findAsync: (id:string) => Promise<TFindResult|ApiError|null>;
+	if (session === null || session?.error === "RefreshAccessTokenError") {
+		signIn("auth0");
+	}
+
+	return session!.accessToken;
 }
 
 /**
- * An interface for simple GET resource/ operations
+ * Parses & validates the given `obj` using the given `schema`
  *
- * @public
+ * @param obj - The object to be parsed/validated
+ * @param schema - The {@link ZodSchema} used to parse/validate the `obj`
+ * @returns
+ * The parsed object is valid, otherwise an {@link ApiError}
  */
-export interface GetApi<TGetResult> extends ApiAbstractions {
-	/**
-	 * Retrieves a list of resources based on the filter and orderBy clauses.
-	 *
-	 * @param filter - A querystring to tells the API what to filter on. Check the API docs for details.
-	 * @param orderBy - Tells the API which field to order by. Check the API docs for what is available.
-	 * @param orderDirection - Tells the API which direction to order. Requires an orderBy be set.
-	 */
-	getAsync: (filter:string, orderBy:string, orderDirection:string) => Promise<TGetResult|ApiError>;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function parseResult<TResult>(obj: any, schema: ZodSchema): Promise<ApiError | TResult> {
+	const parseResult = await schema.safeParseAsync(obj);
 
-/**
- * An interface for POST resource/ create operations
- *
- * @public
- */
-export interface PostApi<TPostInput, TPostResult> extends ApiAbstractions {
-	/**
-	 * Sends a POST request to the API with the provided model and validates the response.
-	 *
-	 * @param obj - The model for the thing we want to create. See the API docs for details.
-	 * @returns The created object from the API
-	 */
-	postAsync: (obj:TPostInput) => Promise<TPostResult|ApiValidationError|ApiError>;
-}
+	if (!parseResult.success) {
+		console.error("The value returned by the server does not match the given type schema.", parseResult, obj);
+		return await ApiErrorSchema.parseAsync({
+			type: "ResponseValidationError",
+			title: "The server returned an unexpected schema but the item may have been created.",
+			detail: parseResult.error,
+			instance: JSON.stringify(obj)
+		});
+	}
 
-/**
- * An interface for PUT resource/{id} update/replace operations
- *
- * @public
- */
-export interface PutApi<TPutInput, TPutResult> extends ApiAbstractions {
-	/**
-	 * Sends a PUT request to the API with the provided model and validates the response.
-	 *
-	 * A PUT replaces the data on the server with the data provided.
-	 *
-	 * @param obj - The model of the thing we want to update. See the API docs for details.
-	 * @returns The updated object from the API
-	 */
-	putAsync: (obj:TPutInput) => Promise<TPutResult|ApiValidationError|ApiError>;
+	return parseResult.data;
 }
+//#endregion
 
-/**
- * An interface for PATCH resource/{id} update operations.
- *
- * A PATCH updates the fields on the server more surgically than a PUT using JSON PATCH
- *
- * @public
- */
-export interface PatchApi<TPatchResult> extends ApiAbstractions {
-	/**
-	 * Sends a PATCH request to the API with the provided JsonPatch and validates the response..
-	 *
-	 * @param patch - The JsonPatch describing the changes to make to the target resource. See the API docs for details.
-	 * @returns The updated object from the API
-	 */
-	patchAsync: (patch:JsonPatch) => Promise<TPatchResult|ApiValidationError|ApiError>;
-}
+//#region endpoint method signature definitions
+export type FindApi = <TFindResult>(id: string) => Promise<TFindResult | ApiError | null>;
+export type GetApi = <TGetResult>(filter: string, orderBy: string, orderDirection: string) => Promise<TGetResult | ApiError>;
+export type PostApi = <TPostInput, TPostResult>(obj: TPostInput) => Promise<TPostResult | ApiValidationError | ApiError>;
+export type PutApi = <TPutInput, TPutResult>(obj: TPutInput) => Promise<TPutResult | ApiValidationError | ApiError>;
+export type PatchApi = <TPatchResult>(patch: JsonPatch) => Promise<TPatchResult | ApiValidationError | ApiError>;
+export type DeleteApi = <TDeleteResult>(id: string) => Promise<TDeleteResult | ApiValidationError | ApiError>;
+//#endregion
 
-/**
- * An interface for DELETE resource/{id} update operations.
- *
- * @public
- */
-export interface DeleteApi<TDeleteResult> extends ApiAbstractions {
-	/**
-	 * Deletes the resource/record identified by the ID given.
-	 *
-	 * @param id - the ID of the item to delete
-	 */
-	deleteAsync: (id:string) => Promise<TDeleteResult|ApiValidationError|ApiError>;
-}
-
+//#region General ZodSchema & type definitions
 export const ApiErrorSchema = z.object({
 	type: z.string().optional(),
 	title: z.string().optional(),
@@ -141,11 +76,19 @@ export const ApiErrorSchema = z.object({
 	detail: z.string().optional(),
 	instance: z.string().optional(),
 });
+
+/**
+ * Defines the structure of a `ProblemDetails` object that may be returned by the API
+ */
 export type ApiError = z.infer<typeof ApiErrorSchema>;
 
 export const ApiValidationErrorSchema = z.object({
 	errors: z.string().array().optional()
 }).extend(ApiErrorSchema.shape);
+
+/**
+ * Defines the structure of a `ValidationProblemDetails` object that may be returned by the API
+ */
 export type ApiValidationError = z.infer<typeof ApiValidationErrorSchema>;
 
 export const JsonPatchOperationSchema = z.object({
@@ -158,3 +101,4 @@ export type JsonPatchOperation = z.infer<typeof JsonPatchOperationSchema>;
 const JsonPatchSchema = JsonPatchOperationSchema.array()
 	.max(10); // JsonPatch in Cosmos only allows 10 patch operations. We may remove this and implement patch splitting in the API layer yet - not sure.
 export type JsonPatch = z.infer<typeof JsonPatchSchema>;
+//#endregion

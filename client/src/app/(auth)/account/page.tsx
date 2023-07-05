@@ -5,7 +5,7 @@ export default async function Account() {
 		<>
 			<h1>Account</h1>
 			<p>
-				To view this page you need to be logged in.<br />
+				To view this page you need to be logged in.
 			</p>
 			<LogoutButton />
 		</>
