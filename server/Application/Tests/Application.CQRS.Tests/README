@@ -1,0 +1,5 @@
+﻿Test rules
+
+1. Put your tests in the correct folder
+2. Create a new test class for each CQRS handler you are testing
+3. Use [Theory] and multiple data sources to test different scenarios where possible

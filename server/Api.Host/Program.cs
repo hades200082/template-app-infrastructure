@@ -1,4 +1,5 @@
 using Api.Host;
+using Application.Abstractions;
 using Domain.DataSeeds; // I don't like accessing the domain here but seed data belongs to the domain.
 using HealthChecks.UI.Client;
 using Infrastructure.AMQP;
@@ -59,6 +60,7 @@ builder.Services.AddValidation();
 builder.Services.AddAuth0(builder.Configuration); // Adds Auth0 authentication with JWT
 // builder.Services.AddAuth0AuthenticationApiClient(builder.Configuration); // Adds the Auth0 AuthenticationApiClient
 // builder.Services.AddAuth0ManagementApiClient(builder.Configuration); // Adds the Auth0 ManagementApiClient (including taking care of getting/refreshing a token automatically)
+builder.Services.AddApplicationServices();
 builder.Services.AddCors((options) =>
 {
     options.AddDefaultPolicy(b =>
