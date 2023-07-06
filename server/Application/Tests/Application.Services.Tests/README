@@ -1,0 +1,5 @@
+﻿Test rules
+
+1. Create a new folder for each service you are testing
+2. Create a new test class for each method within the service that you are testing
+3. Use [Theory] and multiple data sources to test different scenarios where possible

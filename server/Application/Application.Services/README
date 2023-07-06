@@ -1,0 +1,8 @@
+﻿This is where IApplicationService implementations can be defined.
+
+Process:
+
+1. Create an appropriate interface in Application.Abstractions. Your interface should inherit IApplicationService
+2. Create your service class in Application.Services, implementing your own interface.
+
+Your service will be registered with DI automatically using your custom interface.

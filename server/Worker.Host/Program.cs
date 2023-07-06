@@ -1,3 +1,4 @@
+using Application.Abstractions;
 using Domain.Abstractions;
 using Infrastructure.AMQP;
 using Infrastructure.Cosmos;
@@ -11,6 +12,7 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddCosmos(context.Configuration, context.HostingEnvironment);
         services.AddAmqp(context.Configuration, context.HostingEnvironment);
         services.AddSingleton<IChangeFeedHandler, ChangeFeedHandler>();
+        services.AddApplicationServices();
     })
     .Build();
 

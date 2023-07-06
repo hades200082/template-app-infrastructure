@@ -47,8 +47,6 @@ public class ExampleController : ControllerBase
     public async Task<IActionResult> GetAsync([Required]string id, CancellationToken cancellationToken)
     {
         _logger.LogMethodCall(new { id });
-        if (!ModelState.IsValid)
-            return ValidationProblem(ModelState);
 
         var queryResult = await _mediator.Send(new GetExampleEntityQuery(id), cancellationToken).ConfigureAwait(false);
 
