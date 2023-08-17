@@ -7,15 +7,14 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
-using Shared.Core;
 
 namespace Infrastructure.Identity.Auth0;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddAuth0(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAuth0(this IServiceCollection services, IConfigurationSection configuration)
     {
-        var auth0Options = services.AddAuth0Options(configuration.GetSection(nameof(Auth0Options)));
+        var auth0Options = services.AddAuth0Options(configuration);
 
         // Add the authentication
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -34,7 +33,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddAuth0AuthenticationApiClient(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAuth0AuthenticationApiClient(this IServiceCollection services, IConfigurationSection configuration)
     {
         // Ensure options are registered just in case we're calling this in a worker.
         services.AddAuth0Options(configuration.GetSection(nameof(Auth0Options)));
@@ -46,19 +45,16 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddAuth0ManagementApiClient(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAuth0ManagementApiClient(this IServiceCollection services, IConfigurationSection configuration)
     {
-        var identityConfig = configuration.GetSection(nameof(Auth0ManagementApiOptions));
-
         // If we don't have the "Authentication" node in settings then skip this
-        if (!identityConfig.Exists()) return services;
+        if (!configuration.Exists()) return services;
 
-        // Otherwise bind the options
-        var auth0ManagementApiOptions = new Auth0ManagementApiOptions();
-        identityConfig.Bind(auth0ManagementApiOptions);
-        services.Configure<Auth0ManagementApiOptions>(identityConfig);
-
-        if (!auth0ManagementApiOptions.Validate()) throw new EnvironmentConfigurationException($"{nameof(Auth0ManagementApiOptions)} environment variables or appSettings are missing or invalid.");
+        // Otherwise bind the options and validate
+        services.AddOptions<Auth0ManagementApiOptions>()
+            .Bind(configuration)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
         // Setup our HTTP Client
         services.AddHttpClient<ManagementApiClientFactory>(nameof(ManagementApiClientFactory))
@@ -83,20 +79,17 @@ public static class ServiceCollectionExtensions
     /// <param name="services"></param>
     /// <param name="configuration"></param>
     /// <returns>The Auth0Options</returns>
-    private static Auth0Options? AddAuth0Options(this IServiceCollection services, IConfiguration configuration)
+    private static Auth0Options? AddAuth0Options(this IServiceCollection services, IConfigurationSection configuration)
     {
-        var auth0Options = new Auth0Options();
-        configuration.Bind(auth0Options);
-
-        if (!auth0Options.Validate())
-            throw new EnvironmentConfigurationException($"{nameof(Auth0Options)} environment variables or appSettings are missing or invalid.");
-
         // Register IOptions<Auth0Options> only if not already registered
         if (services.All(x => x.ServiceType != typeof(IConfigureOptions<Auth0Options>)))
         {
-            services.Configure<Auth0Options>(configuration);
+            services.AddOptions<Auth0Options>()
+                .Bind(configuration)
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
         }
 
-        return auth0Options;
+        return services.BuildServiceProvider().GetService<IOptions<Auth0Options>>()?.Value;
     }
 }

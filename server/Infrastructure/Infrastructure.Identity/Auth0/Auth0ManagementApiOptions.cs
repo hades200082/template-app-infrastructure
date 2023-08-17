@@ -1,15 +1,17 @@
-﻿namespace Infrastructure.Identity.Auth0;
+﻿using System.ComponentModel.DataAnnotations;
 
-internal sealed record Auth0ManagementApiOptions(string ClientId, string ClientSecret, string Domain)
+namespace Infrastructure.Identity.Auth0;
+
+public sealed class Auth0ManagementApiOptions
 {
-    public Auth0ManagementApiOptions() : this(string.Empty,string.Empty, string.Empty)
-    {
-    }
+    public const string ConfigurationSectionName = "Auth0ManagementApiOptions";
 
-    public bool Validate()
-    {
-        return !string.IsNullOrWhiteSpace(ClientId)
-               && !string.IsNullOrWhiteSpace(ClientSecret)
-               && !string.IsNullOrWhiteSpace(Domain);
-    }
+    [Required]
+    public string? ClientId { get; init; }
+
+    [Required]
+    public string? ClientSecret { get; init; }
+
+    [Required]
+    public string? Domain { get; init; }
 }

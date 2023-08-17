@@ -14,12 +14,16 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddCosmos(
         this IServiceCollection services,
-        IConfiguration configuration,
+        IConfigurationSection configuration,
         IHostEnvironment environment
         )
     {
         if (!environment.IsLocal())
-            services.Configure<CosmosOptions>(Guard.Against.Null(configuration).GetSection(nameof(CosmosOptions)));
+            services.AddOptions<CosmosOptions>()
+                .Bind(configuration)
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
         else // If we're running locally let's ensure we're connecting to local services
         {
             // Protecting against DOS attack by limiting time Regex can run
@@ -29,14 +33,17 @@ public static class ServiceCollectionExtensions
             if (string.IsNullOrWhiteSpace(projectName))
                 throw new EnvironmentConfigurationException("'ProjectName' must be set in host configuration.");
 
-            services.Configure<CosmosOptions>(c =>
-            {
-                c.AccountEndpoint = "https://localhost:8081";
-                c.AccountKey =
+            services.AddOptions<CosmosOptions>()
+                .Configure(c =>
+                {
+                    c.AccountEndpoint = "https://localhost:8081";
+                    c.AccountKey =
                     "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
-                c.DatabaseId = $"{projectName}Database";
-                c.ContainerName = $"{projectName}Container";
-            });
+                    c.DatabaseId = $"{projectName}Database";
+                    c.ContainerName = $"{projectName}Container";
+                })
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
         }
 
         services.AddHttpClient<CosmosClient>()
@@ -59,10 +66,6 @@ public static class ServiceCollectionExtensions
             var options = serviceProvider.GetRequiredService<IOptions<CosmosOptions>>().Value;
             var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 
-            if (!options.Validate())
-                throw new EnvironmentConfigurationException(
-                    "CosmosOptions are not valid. Check that you have created the appropriate environment variables.");
-
             var builder = new CosmosClientBuilder(options.AccountEndpoint, options.AccountKey)
                 .WithSerializerOptions(new CosmosSerializationOptions
                 {
@@ -77,10 +80,15 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddSingleton<ICosmosProvider, CosmosProvider>();
-        services.AddSingleton<IChangeFeedProvider, ChangeFeedProvider>();
 
         services.AddSingleton(typeof(IRepository<>), typeof(CosmosRepository<>));
 
+        return services;
+    }
+
+    public static IServiceCollection AddChangeFeedProcessor(this IServiceCollection services)
+    {
+        services.AddSingleton<IChangeFeedProvider, ChangeFeedProvider>();
         return services;
     }
 }

@@ -1,16 +1,18 @@
-﻿namespace Infrastructure.Identity.Auth0;
+﻿using System.ComponentModel.DataAnnotations;
 
-internal sealed record Auth0Options(string Domain, string NameClaimType,  string[] ValidAudiences)
+namespace Infrastructure.Identity.Auth0;
+
+public sealed class Auth0Options
 {
-    public Auth0Options()
-        : this(string.Empty, string.Empty, Array.Empty<string>())
-    {
-    }
+    public const string ConfigurationSectionName = "Auth0Options";
 
-    public bool Validate()
-    {
-        return !string.IsNullOrWhiteSpace(Domain)
-               && !string.IsNullOrWhiteSpace(NameClaimType)
-               && !ValidAudiences.Any(string.IsNullOrWhiteSpace);
-    }
+    [Required]
+    public string? Domain { get; init; }
+
+    public string? NameClaimType { get; init; }
+
+    [Required]
+    [MinLength(1)]
+    public string[]? ValidAudiences { get; init; }
+
 }

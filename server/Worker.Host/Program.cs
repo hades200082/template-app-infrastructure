@@ -1,3 +1,4 @@
+using Ardalis.GuardClauses;
 using Domain.Abstractions;
 using Infrastructure.AMQP;
 using Infrastructure.Cosmos;
@@ -8,8 +9,8 @@ var host = Host.CreateDefaultBuilder(args)
     .UseLogging()
     .ConfigureServices((context, services) =>
     {
-        services.AddCosmos(context.Configuration, context.HostingEnvironment);
-        services.AddAmqp(context.Configuration, context.HostingEnvironment);
+        services.AddCosmos(context.Configuration.GetSection(CosmosOptions.ConfigurationSectionName), context.HostingEnvironment);
+        services.AddAmqp(context.HostingEnvironment, Guard.Against.NullOrEmpty(context.Configuration.GetConnectionString("AzureServiceBus")));
         services.AddSingleton<IChangeFeedHandler, ChangeFeedHandler>();
     })
     .Build();

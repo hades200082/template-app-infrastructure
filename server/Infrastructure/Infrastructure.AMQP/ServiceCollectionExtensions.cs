@@ -9,14 +9,14 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddAmqp(
         this IServiceCollection services,
-        IConfiguration configuration,
-        IHostEnvironment environment
+        IHostEnvironment environment,
+        string azureServiceBusConnectionString
     )
     {
         services.AddMassTransit(x =>
         {
             x.AddConsumers(AppDomain.CurrentDomain.GetAssemblies());
-            
+
             if(environment.IsEnvironment("Local"))
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -30,11 +30,11 @@ public static class ServiceCollectionExtensions
             else
                 x.UsingAzureServiceBus((context, cfg) =>
                 {
-                    cfg.Host(configuration.GetConnectionString("AzureServiceBus"));
+                    cfg.Host(azureServiceBusConnectionString);
                     cfg.ConfigureEndpoints(context);
                 });
         });
-        
+
         return services;
     }
 }

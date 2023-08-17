@@ -20,11 +20,6 @@ internal sealed class CosmosProvider : ICosmosProvider
         CosmosClient client, IOptions<CosmosOptions> options)
     {
         _client = client;
-
-        if (!options.Value.Validate())
-            throw new EnvironmentConfigurationException(
-                "CosmosOptions are not valid. Check that you have created the appropriate environment variables.");
-
         _options = options.Value;
     }
 

@@ -13,7 +13,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddStorage(
         this IServiceCollection services,
-        IConfiguration configuration,
+        IConfigurationSection configuration,
         IHostEnvironment environment
     )
     {
@@ -23,7 +23,11 @@ public static class ServiceCollectionExtensions
 
         if (!environment.IsLocal())
         {
-            services.Configure<StorageOptions>(configuration.GetSection(nameof(StorageOptions)));
+            services.AddOptions<StorageOptions>()
+                .Bind(configuration)
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
             services.AddSingleton<BlobServiceClient>(serviceProvider =>
             {
                 var options = serviceProvider.GetRequiredService<IOptions<StorageOptions>>().Value;

@@ -1,8 +1,15 @@
-﻿namespace Infrastructure.Storage;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Infrastructure.Storage;
 
 public sealed class StorageOptions
 {
-    public string AccountKey { get; init; }
-    public string AccountName { get; init; }
-    public string ContainerName { get; init; }
+    [Required]
+    public string? AccountKey { get; init; }
+
+    [Required]
+    public string? AccountName { get; init; }
+
+    [Required]
+    public string? ContainerName { get; init; }
 }

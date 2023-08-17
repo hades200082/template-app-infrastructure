@@ -52,13 +52,14 @@ builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 #endregion
 
 // Custom layers
-builder.Services.AddCosmos(builder.Configuration, builder.Environment);
-builder.Services.AddStorage(builder.Configuration, builder.Environment);
+builder.Services.AddCosmos(builder.Configuration.GetSection(CosmosOptions.ConfigurationSectionName), builder.Environment);
+builder.Services.AddAuth0(builder.Configuration.GetSection(Auth0Options.ConfigurationSectionName)); // Adds Auth0 authentication with JWT
+// builder.Services.AddAuth0AuthenticationApiClient(builder.Configuration.GetSection(Auth0Options.ConfigurationSectionName)); // Adds the Auth0 AuthenticationApiClient
+// builder.Services.AddAuth0ManagementApiClient(builder.Configuration.GetSection(Auth0ManagementApiOptions.ConfigurationSectionName)); // Adds the Auth0 ManagementApiClient (including taking care of getting/refreshing a token automatically)
+builder.Services.AddStorage(builder.Configuration.GetSection("StorageOptions"), builder.Environment);
 builder.Services.AddMediator();
 builder.Services.AddValidation();
-builder.Services.AddAuth0(builder.Configuration); // Adds Auth0 authentication with JWT
-// builder.Services.AddAuth0AuthenticationApiClient(builder.Configuration); // Adds the Auth0 AuthenticationApiClient
-// builder.Services.AddAuth0ManagementApiClient(builder.Configuration); // Adds the Auth0 ManagementApiClient (including taking care of getting/refreshing a token automatically)
+
 builder.Services.AddCors((options) =>
 {
     options.AddDefaultPolicy(b =>
