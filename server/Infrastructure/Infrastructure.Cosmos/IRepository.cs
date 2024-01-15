@@ -43,7 +43,6 @@ public interface IRepository<TEntity>
 
     // Create
     Task<TEntity?> CreateAsync(TEntity entity,CancellationToken cancellationToken = default);
-    Task CreateAsBatchAsync(IEnumerable<TEntity> entities,CancellationToken cancellationToken = default); // All entities must share the same partition key
 
     // Update
     Task<TEntity?> UpdateAsync(TEntity entity,CancellationToken cancellationToken = default);
@@ -55,6 +54,8 @@ public interface IRepository<TEntity>
     Task<bool> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
     Task<bool> DeleteAsync(string id, string partitionKeyValue, CancellationToken cancellationToken = default);
 
+    // Batch operations
+    Task CreateAsBatchAsync(IEnumerable<TEntity> entities,CancellationToken cancellationToken = default);
+    Task UpdateAsBatchAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
     Task DeleteAsBatchAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
-    Task DeleteAsBatchAsync(IEnumerable<string> ids, string partitionKeyValue, CancellationToken cancellationToken = default); // All entities must share the same partition key
 }
