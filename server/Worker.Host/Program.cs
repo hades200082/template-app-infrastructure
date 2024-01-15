@@ -15,11 +15,29 @@ var host = Host.CreateDefaultBuilder(args)
     })
     .Build();
 
+var logger = host.Services.GetRequiredService<ILogger<Program>>();
+
+
 var changeFeedProcessor = await host.Services
     .GetRequiredService<IChangeFeedProvider>()
     .StartChangeFeedProcessorAsync<Entity>("Worker");
 
 host.Run();
 
-// Anything that needs to be gracefully closed down can go here.
-await changeFeedProcessor.StopAsync();
+#pragma warning disable CA1031
+try
+{
+    await host.RunAsync().ConfigureAwait(false);
+}
+catch (Exception ex)
+{
+    logger.LogCritical(ex, "Application threw an unhandled exception and shut down");
+}
+finally
+{
+    // Anything that needs to be gracefully closed down can go here.
+    await changeFeedProcessor.StopAsync();
+}
+#pragma warning restore CA1031
+
+

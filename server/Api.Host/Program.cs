@@ -76,6 +76,7 @@ builder.Services.AddCors((options) =>
 builder.Services.AddDataSeeds();
 
 var app = builder.Build();
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
 // Execute all seeds before registering middleware
 await app.ExecuteDataSeedingAsync(app.Lifetime.ApplicationStopping).ConfigureAwait(false);
@@ -100,4 +101,15 @@ app.MapHealthChecksUI(options =>
 });
 app.UseCors();
 
-await app.RunAsync().ConfigureAwait(true);
+
+
+#pragma warning disable CA1031
+try
+{
+    await app.RunAsync().ConfigureAwait(true);
+}
+catch (Exception ex)
+{
+    logger.LogCritical(ex, "Application threw an unhandled exception and shut down");
+}
+#pragma warning restore CA1031
