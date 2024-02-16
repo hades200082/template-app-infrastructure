@@ -11,15 +11,15 @@ public sealed class UatExampleEntitySeed : ICosmosDataSeed
     {
         // Delete anything that already exists
         var result = await _repository.QueryAsync(cancellationToken);
-        var items = result.Data.Select(x => x.Id).ToList();
+        var items = result.Data.ToList();
         if (result.HasMore)
         {
             result = await _repository.ContinueQueryAsync(result.ContinuationToken!, cancellationToken);
-            items.AddRange(result.Data.Select(x => x.Id));
+            items.AddRange(result.Data);
         }
 
         if(items.Any())
-            await _repository.DeleteAsBatchAsync(items, nameof(Entities.ExampleEntity), cancellationToken);
+            await _repository.DeleteAsBatchAsync(items, cancellationToken);
 
         _ = await _repository.CreateAsync(new Entities.ExampleEntity("Lee"), cancellationToken);
         _ = await _repository.CreateAsync(new Entities.ExampleEntity("Liam"), cancellationToken);

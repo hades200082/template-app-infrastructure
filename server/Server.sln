@@ -1,48 +1,48 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Host", "Api.Host\Api.Host.csproj", "{9C78B89C-0CA0-4A91-A2EE-10EF1ED7867C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Host", "Api.Host\Api.Host.csproj", "{9C78B89C-0CA0-4A91-A2EE-10EF1ED7867C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{764F8911-2D89-4612-89BD-0BF8C64A4945}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{1AE39931-ED22-4BE3-A14E-A0FB8C696929}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Cosmos", "Infrastructure\Infrastructure.Cosmos\Infrastructure.Cosmos.csproj", "{80EB77BD-8425-4534-AE46-24A2E2BD016D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Cosmos", "Infrastructure\Infrastructure.Cosmos\Infrastructure.Cosmos.csproj", "{80EB77BD-8425-4534-AE46-24A2E2BD016D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Core", "Shared\Shared.Core\Shared.Core.csproj", "{F8890FF1-5538-47D9-9E2E-E1BE5EF14355}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Core", "Shared\Shared.Core\Shared.Core.csproj", "{F8890FF1-5538-47D9-9E2E-E1BE5EF14355}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{85269DFF-009F-4312-A862-FEE78FDC1538}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Abstractions", "Application\Application.Abstractions\Application.Abstractions.csproj", "{F1D3DAB1-3D65-4504-93A7-BDF5D2BF60C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Abstractions", "Application\Application.Abstractions\Application.Abstractions.csproj", "{F1D3DAB1-3D65-4504-93A7-BDF5D2BF60C2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{C6B63A2F-9AD6-416D-A821-3B157BF2141A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Abstractions", "Domain\Domain.Abstractions\Domain.Abstractions.csproj", "{E48F1FD0-98A0-4E71-8FDC-91C1E9AA1921}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Abstractions", "Domain\Domain.Abstractions\Domain.Abstractions.csproj", "{E48F1FD0-98A0-4E71-8FDC-91C1E9AA1921}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.AMQP", "Infrastructure\Infrastructure.AMQP\Infrastructure.AMQP.csproj", "{DCB2730A-362A-45E4-8507-2A1A77261FEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.AMQP", "Infrastructure\Infrastructure.AMQP\Infrastructure.AMQP.csproj", "{DCB2730A-362A-45E4-8507-2A1A77261FEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Storage", "Infrastructure\Infrastructure.Storage\Infrastructure.Storage.csproj", "{1CAB9CD9-52C3-4D2A-B7AA-A95BCB9DA482}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Storage", "Infrastructure\Infrastructure.Storage\Infrastructure.Storage.csproj", "{1CAB9CD9-52C3-4D2A-B7AA-A95BCB9DA482}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Entities", "Domain\Domain.Entities\Domain.Entities.csproj", "{2C4895FF-B815-4515-86AD-8EF8A1797EC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Entities", "Domain\Domain.Entities\Domain.Entities.csproj", "{2C4895FF-B815-4515-86AD-8EF8A1797EC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.DtoModels", "Application\Application.DtoModels\Application.DtoModels.csproj", "{26A2A7CA-7361-4746-8A2C-D3DC9F567839}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.DtoModels", "Application\Application.DtoModels\Application.DtoModels.csproj", "{26A2A7CA-7361-4746-8A2C-D3DC9F567839}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.MessageModels", "Application\Application.MessageModels\Application.MessageModels.csproj", "{4E1DEC61-DB95-437E-9649-8FEADE053F25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Logging", "Infrastructure\Infrastructure.Logging\Infrastructure.Logging.csproj", "{85783609-ADFA-449D-B133-FA0797D0C05F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Logging", "Infrastructure\Infrastructure.Logging\Infrastructure.Logging.csproj", "{85783609-ADFA-449D-B133-FA0797D0C05F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker.Host", "Worker.Host\Worker.Host.csproj", "{94777566-CD32-49B9-8546-0AE0AAA24DDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Worker.Host", "Worker.Host\Worker.Host.csproj", "{94777566-CD32-49B9-8546-0AE0AAA24DDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Mappers", "Application\Application.Mappers\Application.Mappers.csproj", "{A25FF703-03C3-4E16-BFF3-9D1CDB1BC767}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Mappers", "Application\Application.Mappers\Application.Mappers.csproj", "{A25FF703-03C3-4E16-BFF3-9D1CDB1BC767}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.CQRS", "Application\Application.CQRS\Application.CQRS.csproj", "{106B2632-B05F-4C5F-B0C4-BE2447BD70CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.CQRS", "Application\Application.CQRS\Application.CQRS.csproj", "{106B2632-B05F-4C5F-B0C4-BE2447BD70CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Validation", "Infrastructure\Infrastructure.Validation\Infrastructure.Validation.csproj", "{A627BECC-72AE-4DF9-8BE3-5D4A54CBB6CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Validation", "Infrastructure\Infrastructure.Validation\Infrastructure.Validation.csproj", "{A627BECC-72AE-4DF9-8BE3-5D4A54CBB6CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Identity", "Infrastructure\Infrastructure.Identity\Infrastructure.Identity.csproj", "{8FC5CC22-9942-4AC1-94B9-58B9AB499A15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Identity", "Infrastructure\Infrastructure.Identity\Infrastructure.Identity.csproj", "{8FC5CC22-9942-4AC1-94B9-58B9AB499A15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.DataSeeds", "Domain\Domain.DataSeeds\Domain.DataSeeds.csproj", "{0B7297A8-69F2-482B-B4F6-59925DC244B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.DataSeeds", "Domain\Domain.DataSeeds\Domain.DataSeeds.csproj", "{0B7297A8-69F2-482B-B4F6-59925DC244B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.DataSeedAbstractions", "Domain\Domain.DataSeedAbstractions\Domain.DataSeedAbstractions.csproj", "{4D9C1A72-77C8-46C8-A65C-88B354377295}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.DataSeedAbstractions", "Domain\Domain.DataSeedAbstractions\Domain.DataSeedAbstractions.csproj", "{4D9C1A72-77C8-46C8-A65C-88B354377295}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

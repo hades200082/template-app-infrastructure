@@ -1,19 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Riok.Mapperly" Version="2.8.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\Domain\Domain.Entities\Domain.Entities.csproj" />
-      <ProjectReference Include="..\Application.DtoModels\Application.DtoModels.csproj" />
-      <ProjectReference Include="..\Application.MessageModels\Application.MessageModels.csproj" />
-    </ItemGroup>
-
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Riok.Mapperly" Version="2.8.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Domain\Domain.Entities\Domain.Entities.csproj" />
+    <ProjectReference Include="..\Application.DtoModels\Application.DtoModels.csproj" />
+    <ProjectReference Include="..\Application.MessageModels\Application.MessageModels.csproj" />
+  </ItemGroup>
 </Project>
