@@ -3,20 +3,19 @@ using Domain.Abstractions;
 using Infrastructure.AMQP;
 using Infrastructure.Cosmos;
 using Infrastructure.Logging;
+using Microsoft.AspNetCore.Builder;
 using Worker.Host;
 
-var host = Host.CreateDefaultBuilder(args)
-    .UseLogging()
-    .ConfigureServices((context, services) =>
-    {
-        services.AddCosmos(context.Configuration.GetSection(CosmosOptions.ConfigurationSectionName), context.HostingEnvironment);
-        services.AddAmqp(context.HostingEnvironment, Guard.Against.NullOrEmpty(context.Configuration.GetConnectionString("AzureServiceBus")));
-        services.AddSingleton<IChangeFeedHandler, ChangeFeedHandler>();
-    })
-    .Build();
+var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseLogging();
 
+builder.Services.AddCosmos(builder.Configuration.GetSection(CosmosOptions.ConfigurationSectionName), builder.Environment);
+builder.Services.AddAmqp(builder.Environment,
+    Guard.Against.NullOrEmpty(builder.Configuration.GetConnectionString("AzureServiceBus")));
+builder.Services.AddSingleton<IChangeFeedHandler, ChangeFeedHandler>();
+
+var host = builder.Build();
 var logger = host.Services.GetRequiredService<ILogger<Program>>();
-
 
 var changeFeedProcessor = await host.Services
     .GetRequiredService<IChangeFeedProvider>()
@@ -39,5 +38,3 @@ finally
     await changeFeedProcessor.StopAsync();
 }
 #pragma warning restore CA1031
-
-
