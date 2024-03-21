@@ -1,5 +1,4 @@
-﻿using Ardalis.GuardClauses;
-using Domain.Entities;
+﻿using Domain.Entities;
 
 namespace Application.CQRS.Commands;
 
@@ -36,7 +35,7 @@ public sealed class CreateExampleEntityCommandHandler : ICommandHandler<CreateEx
         _logger.LogMethodCall(new { command });
 
         // Should be validated in controller before getting here so throw is fine
-        Guard.Against.NullOrWhiteSpace(command.Name);
+        ArgumentException.ThrowIfNullOrWhiteSpace(command.Name, nameof(command));
 
         var entity = await _repository.CreateAsync(new ExampleEntity(command.Name), cancellationToken);
 

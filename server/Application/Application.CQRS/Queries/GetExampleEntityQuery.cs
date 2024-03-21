@@ -1,5 +1,4 @@
-﻿using Ardalis.GuardClauses;
-using Domain.Entities;
+﻿using Domain.Entities;
 using FluentValidation;
 
 namespace Application.CQRS.Queries;
@@ -41,7 +40,7 @@ public sealed class
     {
         _logger.LogMethodCall(new { query });
 
-        Guard.Against.NullOrWhiteSpace(query.Id);
+        ArgumentException.ThrowIfNullOrWhiteSpace(query.Id, nameof(query));
 
         var entity = await _repository.FindAsync(query.Id, nameof(ExampleEntity), cancellationToken);
         if (entity is null) return new NotFound();
