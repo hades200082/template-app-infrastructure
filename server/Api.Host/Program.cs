@@ -110,6 +110,8 @@ try
 }
 catch (Exception ex)
 {
+#pragma warning disable CA1848
     logger.LogCritical(ex, "Application threw an unhandled exception and shut down");
+#pragma warning restore CA1848
 }
 #pragma warning restore CA1031

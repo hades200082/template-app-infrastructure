@@ -1,5 +1,4 @@
-﻿using Ardalis.GuardClauses;
-using Azure.Storage;
+﻿using Azure.Storage;
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,9 +16,9 @@ public static class ServiceCollectionExtensions
         IHostEnvironment environment
     )
     {
-        Guard.Against.Null(services);
-        Guard.Against.Null(configuration);
-        Guard.Against.Null(environment);
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(environment);
 
         if (!environment.IsLocal())
         {

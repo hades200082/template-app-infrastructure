@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using Ardalis.GuardClauses;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Extensions.Configuration;
@@ -29,7 +28,7 @@ public static class ServiceCollectionExtensions
             // Protecting against DOS attack by limiting time Regex can run
             var regex = new Regex("[^a-zA-Z0-9]+", RegexOptions.None, TimeSpan.FromSeconds(1));
 
-            var projectName = regex.Replace(Guard.Against.Null(configuration)["ProjectName"] ?? "", "");
+            var projectName = regex.Replace(configuration?.GetValue<string?>("ProjectName") ?? "TemplateProject", "");
             if (string.IsNullOrWhiteSpace(projectName))
                 throw new EnvironmentConfigurationException("'ProjectName' must be set in host configuration.");
 

@@ -19,7 +19,7 @@ public sealed class LocalExampleEntitySeed : ICosmosDataSeed
         }
 
         if(items.Count != 0)
-            await _repository.DeleteAsBatchAsync(items, cancellationToken);
+            await _repository.DeleteAsBatchAsync(items, cancellationToken: cancellationToken);
 
         _ = await _repository.CreateAsync(new Entities.ExampleEntity("Lee"), cancellationToken);
         _ = await _repository.CreateAsync(new Entities.ExampleEntity("Liam"), cancellationToken);
