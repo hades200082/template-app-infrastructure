@@ -4,12 +4,14 @@
 		"next/core-web-vitals",
 		"plugin:tailwindcss/recommended",
 		"plugin:@typescript-eslint/recommended",
-			"plugin:storybook/recommended"
+		"plugin:storybook/recommended",
+		"plugin:jsx-a11y/recommended"
 	],
 	"plugins": [
 		"tailwindcss",
 		"@typescript-eslint",
-		"eslint-plugin-tsdoc"
+		"eslint-plugin-tsdoc",
+		"jsx-a11y"
 	],
 	"settings": {
 		"tailwindcss": {
