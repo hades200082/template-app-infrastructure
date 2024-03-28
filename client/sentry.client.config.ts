@@ -6,10 +6,11 @@ import { ENV } from "@/lib/envSchema";
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-	dsn: ENV.SENTRY_DSN,
+	dsn: ENV.NEXT_PUBLIC_SENTRY_DSN,
+	environment: ENV.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
 
 	// Adjust this value in production, or use tracesSampler for greater control
-	tracesSampleRate: ENV.SENTRY_TRACE_SAMPLE_RATE,
+	tracesSampleRate: ENV.NEXT_PUBLIC_SENTRY_TRACE_SAMPLE_RATE,
 
 	// Setting this option to true will print useful information to the console while you're setting up Sentry.
 	debug: false,
@@ -18,7 +19,7 @@ Sentry.init({
 
 	// This sets the sample rate to be 10%. You may want this to be 100% while
 	// in development and sample at a lower rate in production
-	replaysSessionSampleRate: ENV.SENTRY_REPLAY_SESSION_SAMPLE_RATE,
+	replaysSessionSampleRate: ENV.NEXT_PUBLIC_SENTRY_REPLAY_SESSION_SAMPLE_RATE,
 
 	// You can remove this option if you're not planning to use the Sentry Session Replay feature:
 	integrations: [

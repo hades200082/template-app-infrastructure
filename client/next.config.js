@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 
-import { ENV } from "@/lib/envSchema";
-
 const nextConfig = {
 	async headers() {
 		const ContentSecurityPolicy = `
@@ -64,9 +62,9 @@ module.exports = withSentryConfig(
 		// https://github.com/getsentry/sentry-webpack-plugin#options
 
 		// Suppresses source map uploading logs during build
-		silent: ENV.SENTRY_SURPRESS_UPLOAD_SOURCEMAPS,
+		silent: false,
 		org: "distinction-ds",
-		project: ENV.SENTRY_PROJECT_NAME,
+		project: "",
 	},
 	{
 		// For all available options, see:

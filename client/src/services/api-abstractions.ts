@@ -1,11 +1,11 @@
-import { authOptions } from "./auth";
-import { cleanUrl } from "@/utils/urlHelper";
 import { ENV } from "@/lib/envSchema";
+import { cleanUrl } from "@/utils/urlHelper";
 import { getServerSession } from "next-auth";
 import { getSession, signIn } from "next-auth/react";
-import { z, ZodSchema } from "zod";
+import { ZodSchema, z } from "zod";
+import { authOptions } from "./auth";
 
-export const API_BASE_URL = cleanUrl(ENV.API_BASE_URL);
+export const API_BASE_URL = cleanUrl(ENV.NEXT_PUBLIC_API_BASE_URL);
 
 //#region utilities
 /**
