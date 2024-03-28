@@ -13,6 +13,7 @@
     "build-storybook": "storybook build -s public"
   },
   "dependencies": {
+    "@sentry/nextjs": "^7.105.0",
     "@tailwindcss/container-queries": "^0.1.1",
     "@types/node": "20.1.2",
     "@types/react": "18.2.6",

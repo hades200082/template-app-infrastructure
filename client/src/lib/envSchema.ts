@@ -12,7 +12,13 @@ const envSchema = z.object({
 	AUTH_TOKEN_UPDATE_AT_SECONDS: z.coerce.number(),
 	NEXTAUTH_URL: z.string().trim().url().optional(),
 	NEXTAUTH_SECRET: z.string(),
-	NODE_TLS_REJECT_UNAUTHORIZED: z.coerce.number().min(0).max(1).optional()
+	NODE_TLS_REJECT_UNAUTHORIZED: z.coerce.number().min(0).max(1).optional(),
+	SENTRY_AUTH_TOKEN: z.string().optional(),
+	SENTRY_DSN: z.string().optional(),
+	SENTRY_PROJECT_NAME: z.string().optional(),
+	SENTRY_REPLAY_SESSION_SAMPLE_RATE: z.number().min(0).max(1).optional(),
+	SENTRY_SURPRESS_UPLOAD_SOURCEMAPS: z.boolean().optional(),
+	SENTRY_TRACE_SAMPLE_RATE: z.number().min(0).max(1).optional(),
 }).refine(
 	schema => 
 		schema.AUTH_TOKEN_UPDATE_AT_SECONDS <= schema.AUTH_TOKEN_EXPIRATION_SECONDS, 
