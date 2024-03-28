@@ -4,7 +4,7 @@
 		"next/core-web-vitals",
 		"plugin:tailwindcss/recommended",
 		"plugin:@typescript-eslint/recommended",
-        "plugin:storybook/recmmended"
+			"plugin:storybook/recommended"
 	],
 	"plugins": [
 		"tailwindcss",
@@ -69,18 +69,6 @@
 		"semi": [
 			"error",
 			"always"
-		],
-		"sort-imports": [
-			"warn",
-			{
-				"ignoreCase": true,
-				"memberSyntaxSortOrder": [
-					"none",
-					"all",
-					"single",
-					"multiple"
-				]
-			}
 		],
 		"tailwindcss/no-custom-classname": "off",
 		"tsdoc/syntax": "warn",

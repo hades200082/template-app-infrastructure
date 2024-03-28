@@ -41,12 +41,10 @@
     "@storybook/nextjs": "^7.0.24",
     "@storybook/react": "^7.0.24",
     "@storybook/testing-library": "^0.0.14-next.2",
-    "eslint-plugin-storybook": "^0.6.12",
-    "storybook": "^7.0.24",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
+    "eslint-plugin-storybook": "^0.6.12",
     "eslint-plugin-tailwindcss": "^3.13.0",
-    "husky": "^8.0.0",
-    "lint-staged": "^13.2.3"
+    "storybook": "^7.0.24"
   }
 }
